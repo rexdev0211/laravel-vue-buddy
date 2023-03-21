@@ -1,0 +1,3961 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Mobile API
+servers:
+  - url: https://{domain}/api/{version}
+    description: API server
+    variables:
+      domain:
+        enum:
+          - 'staging.barebuddy.com'
+          - 'buddy.net'
+        default: 'staging.barebuddy.com'
+      version:
+        default: v1
+paths:
+  /register/validate/person:
+    post:
+      summary: Validate name and date
+      description: 'Validate name and date of birth (at the registration step #1)'
+      operationId: registrationValidatePerson
+      tags:
+        - Registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  $ref: '#/components/schemas/Login'
+                dob:
+                  $ref: '#/components/schemas/DateOfBirth'
+              required:
+                - name
+                - dob
+      responses:
+        '200':
+          description: 'Validation succeed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+        '422':
+          description: 'Validation failed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+  /register/validate/credentials:
+    post:
+      description: 'Validate email and password (at the registration step #2)'
+      operationId: registrationValidateCredentials
+      tags:
+        - Registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: '#/components/schemas/Email'
+                password:
+                  $ref: '#/components/schemas/Password'
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: 'Validation succeed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+        '422':
+          description: 'Validation failed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+  /register/submit:
+    post:
+      description: |
+        Validate all the registration params and create a user (at the last registration step) |
+
+        NOTE:
+        In case of error registration form should rewind to the step depending on
+        which field’s key is presented in “fields” array:
+          - name, dob - send to step #1
+          - email, password - send to step #2
+          - photo - send to step #3
+          - lat, lng, address, location_type - send to step #4
+          - terms - send to step #5
+      operationId: registrationSubmit
+      tags:
+        - Registration
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                name:
+                  $ref: '#/components/schemas/Login'
+                dob:
+                  $ref: '#/components/schemas/DateOfBirth'
+                email:
+                  $ref: '#/components/schemas/Email'
+                password:
+                  $ref: '#/components/schemas/Password'
+                terms:
+                  description: Terms were accepted flag
+                  type: boolean
+                  example: true
+                lat:
+                  $ref: '#/components/schemas/UserLat'
+                lng:
+                  $ref: '#/components/schemas/UserLng'
+                address:
+                  description: An address
+                  type: string
+                  maxLength: 255
+                  example: Auguststraße 29c, 10119 Berlin, Germany
+                location_type:
+                  $ref: '#/components/schemas/LocationType'
+                lang:
+                  $ref: '#/components/schemas/Lang'
+                locality:
+                  description: City
+                  type: string
+                  maxLength: 100
+                  example: Berlin
+                state:
+                  description: State
+                  type: string
+                  maxLength: 100
+                  example: North Rhine-Westphalia
+                country:
+                  description: Country
+                  type: string
+                  maxLength: 100
+                  example: Germany
+                country_code:
+                  $ref: '#/components/schemas/CountryCode'
+                photo:
+                  description: Photo file
+                  type: string
+                  format: binary
+                  example: <file>
+                actions:
+                  description: Crop/rotate image actions payload. A valid stringified JSON.
+                  type: string
+                  example: "{\"rotation\":90,\"crop\":{\"x\":0,\"y\":351,\"width\":450,\"height\":429}}"
+              required:
+                - name
+                - dob
+                - email
+                - password
+                - terms
+                - lat
+                - lng
+                - address
+                - location_type
+      responses:
+        '200':
+          description: 'Validation succeed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+        '422':
+          description: 'Validation failed'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                  fields:
+                    description: List of fields which contains errors
+                    type: array
+                    items:
+                      type: string
+                      example: email
+        '500':
+          description: 'First message from stuff not sent'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+  /oauth/token:
+    post:
+      summary: Get an auth token by OAuth credentials
+      operationId: getAuthToken
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  description: App client ID
+                  type: integer
+                  example: 2
+                client_secret:
+                  description: App client SECRET
+                  type: string
+                  example: bvdy620hm3u1bvwv
+                password:
+                  $ref: '#/components/schemas/Password'
+                username:
+                  oneOf:
+                    - $ref: '#/components/schemas/Login'
+                    - $ref: '#/components/schemas/Email'
+                refresh_token:
+                  description: Refresh token
+                  type: string
+                  example: bvdy620hm3u1bvwv
+                grant_type:
+                  default: password
+                  enum:
+                    - password
+                    - refresh_token
+                scope:
+                  type: string
+                  example: '*'
+              required:
+                - client_id
+                - client_secret
+                - grant_type
+      responses:
+        '200':
+          description: Access granted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: c32t389vn304032nc21c9n
+                  expires_in:
+                    description: Seconds to expire
+                    type: integer
+                    example: 3600
+                  refresh_token:
+                    type: string
+                    example: c32t389vn304032nc21c9n
+                  token_type:
+                    type: string
+                    example: Bearer
+        '401':
+          description: 'Login failed'
+    servers:
+      - url: https://{domain}
+        description: Auth server
+        variables:
+          domain:
+            enum:
+              - 'staging.barebuddy.com'
+              - 'barebuddy.com'
+            default: 'staging.barebuddy.com'
+  /auth/password/send:
+    post:
+      description: 'Send a password reset email'
+      operationId: passwordResetSend
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: '#/components/schemas/Email'
+      responses:
+        '200':
+          description: 'Reset link sent to email'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    description: Status token
+                    type: string
+                    example: passwords.sent
+        '500':
+          description: 'Other errors'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    description: Status token
+                    default: passwords.user
+                    enum:
+                      - passwords.user
+                      - passwords.throttled
+  /auth/password/reset:
+    post:
+      description: 'Submit a new password using token from a password reset email'
+      operationId: passwordReset
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: '#/components/schemas/Email'
+                password:
+                  $ref: '#/components/schemas/Password'
+                password_confirmation:
+                  $ref: '#/components/schemas/Password'
+                token:
+                  description: A reset token recieved via email
+                  type: string
+                  example: vqtpn9qty4ctoy7pwv32nhb9eo6yumprjdhval
+              required:
+                - email
+                - password
+                - password_confirmation
+                - token
+      responses:
+        '200':
+          description: 'Password reset success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    description: Status token
+                    type: string
+                    example: passwords.reset
+        '500':
+          description: 'Error'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    description: Status token
+                    default: passwords.user
+                    enum:
+                      - passwords.user
+                      - passwords.throttled
+                      - passwords.token
+              examples:
+                caseUser:
+                  summary: User not found
+                  value:
+                    error: passwords.user
+                caseThrottled:
+                  summary: Request was throttled
+                  value:
+                    error: passwords.throttled
+                caseToken:
+                  summary: Invalid token
+                  value:
+                    error: passwords.token
+  /auth/password:
+    post:
+      description: 'Change a password by authenticated user'
+      operationId: passwordChange
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  $ref: '#/components/schemas/Password'
+                new_password:
+                  $ref: '#/components/schemas/NewPassword'
+                new_password_confirmation:
+                  $ref: '#/components/schemas/NewPassword'
+              required:
+                - old_password
+                - new_password
+                - new_password_confirmation
+      responses:
+        '200':
+          description: 'Password reset success'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+        '422':
+          description: 'Error token or string'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+              examples:
+                caseWhongOldPassword:
+                  summary: Old password is wrong
+                  value:
+                    error: wrong_old_password
+                caseMismatch:
+                  summary: Request was throttled
+                  value:
+                    error: The new password confirmation does not match.
+      security:
+        - auth:
+            - auth:api
+  /auth/logout:
+    post:
+      description: Revoke an auth token
+      operationId: logOut
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Token revoked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+        '500':
+          description: Unknown error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+      security:
+        - auth:
+            - auth:api
+  /user:
+    get:
+      description: 'Get the current user’s information'
+      operationId: getCurrentUser
+      tags:
+        - User
+      responses:
+        '200':
+          description: User's data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  favoritesCount:
+                    description: Favourite users count
+                    type: integer
+                    example: 69
+                  blockedCount:
+                    description: Blocked users count
+                    type: integer
+                    example: 42
+                  latestWidget:
+                    description: (ignore this)
+                    type: string
+                    example: ""
+                  widgetAnnounce:
+                    description: (ignore this)
+                    type: string
+                    example: ""
+                  user:
+                    $ref: '#/components/schemas/UserAllAttributes'
+                  options:
+                    $ref: '#/components/schemas/ProfileOptions'
+                  onlineFavorites:
+                    description: Favourite users list
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserGeneralAttributes'
+                  photos:
+                    description: User's photos
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PhotoAllAttributes'
+                  videos:
+                    description: User's own videos
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Video'
+                  myTaps:
+                    description: Taps user sent
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tap'
+                  myEvents:
+                    description: User's own events
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Event'
+                  activeMemberships:
+                    description: Events which current user is attended to
+                    type: array
+                    items:
+                      type: integer
+                      example: 191349
+                  membershipRequests:
+                    description: Events which has unhandled requests
+                    type: array
+                    items:
+                      type: integer
+                      example: 191349
+      security:
+        - auth:
+            - auth:api
+    patch:
+      description: 'Update current user`s info'
+      operationId: updateCurrentUser
+      tags:
+        - User
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  $ref: '#/components/schemas/Login'
+                dob:
+                  $ref: '#/components/schemas/DateOfBirth'
+                email:
+                  $ref: '#/components/schemas/Email'
+                weight:
+                  description: User's weight
+                  type: integer
+                  example: 75
+                height:
+                  description: User's height
+                  type: integer
+                  example: 175
+                body:
+                  $ref: '#/components/schemas/UserBody'
+                position:
+                  $ref: '#/components/schemas/UserPosition'
+                penis:
+                  $ref: '#/components/schemas/UserPenis'
+                hiv:
+                  $ref: '#/components/schemas/UserHiv'
+                drugs:
+                  $ref: '#/components/schemas/UserDrugs'
+                address:
+                  description: User's address
+                  type: string
+                  maxLength: 255
+                  example: Auguststraße 29c, 10119 Berlin, Germany
+                about:
+                  description: User's description
+                  type: string
+                  maxLength: 150
+                  example: "It's me!"
+                password:
+                  $ref: '#/components/schemas/Password'
+                lat:
+                  $ref: '#/components/schemas/UserLat'
+                lng:
+                  $ref: '#/components/schemas/UserLng'
+                address_lat:
+                  $ref: '#/components/schemas/UserAddressLat'
+                address_lng:
+                  $ref: '#/components/schemas/UserAddressLng'
+                show_age:
+                  $ref: '#/components/schemas/EnumYesNo'
+                unit_system:
+                  $ref: '#/components/schemas/UnitSystem'
+                email_reminders:
+                  $ref: '#/components/schemas/EmailReminders'
+                location_type:
+                  $ref: '#/components/schemas/LocationType'
+                locality:
+                  description: City
+                  type: string
+                  maxLength: 100
+                  example: Berlin
+                state:
+                  description: State
+                  type: string
+                  maxLength: 100
+                  example: North Rhine-Westphalia
+                country_code:
+                  $ref: '#/components/schemas/CountryCode'
+                language:
+                  $ref: '#/components/schemas/Lang'
+                has_notifications:
+                  description: Any type of tap, event or visitor signal was recieved
+                  type: boolean
+                  example: false
+                has_new_notifications:
+                  description: A "Tap signal" or "Event liked" signal was recieved
+                  type: boolean
+                  example: false
+                has_new_visitors:
+                  description: A "New visitor" signal was recieved
+                  type: boolean
+                  example: false
+                has_new_messages:
+                  description: A "New message" signal was recieved
+                  type: boolean
+                  example: false
+                subscribed:
+                  $ref: '#/components/schemas/EnumYesNo'
+                notification_sound:
+                  $ref: '#/components/schemas/EnumYesNo'
+                push_notifications:
+                  $ref: '#/components/schemas/EnumYesNo'
+                view_sensitive_events:
+                  $ref: '#/components/schemas/EnumYesNo'
+                view_sensitive_media:
+                  description: Show adult content flag
+                  type: boolean
+                  example: false
+                invisible:
+                  description: Invisible mode used only by staff
+                  type: boolean
+                  example: false
+      responses:
+        '200':
+          description: User's data updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+      security:
+        - auth:
+            - auth:api
+  /user/status:
+    post:
+      description: |
+        Returns:
+        - Current user’s data (always)
+        - Favourite users statuses (always)
+        - Statuses of users whom ids were passed to the request
+
+        NOTES:
+        This request automatically updates the current user’s “last_active” timestamp in DB.
+        Could be used to update user statuses while scrolling through discover.
+
+        Web version discover works this way:
+        “scroll event” > “gather visible user’s ids” > “POST /user/status”
+        (name of the route may differ in web version).
+
+        Web version script gathers user ids from conversations and notifications
+        and updates their statuses on the frontend, too.
+      operationId: updateCurrentUserStatus
+      tags:
+        - User
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  description: Array of users ids listed in discover (visible in the viewport only), conversations and notifications.
+                  type: array
+                  items:
+                    type: integer
+                    example: 1500
+      responses:
+        '200':
+          description: Data retrieved successfully and user's status was updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/UserAllAttributes'
+                  freshUsers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserStatusAttributes'
+                  onlineFavorites:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserGeneralAttributes'
+      security:
+        - auth:
+            - auth:api
+  /user/discreet:
+    post:
+      description: 'Toggle user’s "descreet_mode" flag'
+      operationId: updateUserDescreetMode
+      tags:
+        - User
+      responses:
+        '200':
+          description: Descreet mode value changed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  descreet_mode:
+                    type: boolean
+                    description: The fresh value
+      security:
+        - auth:
+            - auth:api
+  /user/{userId}:
+    get:
+      description: 'Get any user’s info.'
+      operationId: getUser
+      tags:
+        - User
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+      responses:
+        '200':
+          description: User's data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPublicAttributes'
+      security:
+        - auth:
+            - auth:api
+  /user/favorite:
+    post:
+      description: 'Change a user favourite status'
+      operationId: addUserToFavourites
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  description: User id
+                  type: integer
+                  example: 3500
+                favourite:
+                  description: Favourite flag
+                  type: boolean
+                  example: false
+              required:
+                - UserId
+                - favourite
+      responses:
+        '200':
+          description: User successfully added to favourites list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessKey'
+        '422':
+          description: Favourite users count reached it’s free limit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+      security:
+        - auth:
+            - auth:api
+  /user/block:
+    post:
+      description: 'Block a user'
+      operationId: blockUser
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  description: User's id
+                  type: integer
+                  example: 3000
+              required:
+                - userId
+      responses:
+        '200':
+          description: User successfully blocked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessKey'
+        '422':
+          description: Blocked users count reached it’s free limit or user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+      security:
+        - auth:
+            - auth:api
+  /user/report:
+    post:
+      description: 'Send a report to moderator'
+      operationId: reportUser
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  description: User's id
+                  type: integer
+                  example: 3000
+                reason:
+                  description: Report's reason
+                  default: under_age
+                  enum:
+                    - harassment
+                    - fake
+                    - spam
+                    - under_age
+                    - other
+              required:
+                - userId
+                - reason
+      responses:
+        '200':
+          description: Report successfully sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessKey'
+        '422':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+      security:
+        - auth:
+            - auth:api
+  /users/unblock:
+    post:
+      description: 'Unblock all users, who was earlier blocker by current user'
+      operationId: unblockUsers
+      tags:
+        - User
+      responses:
+        '200':
+          description: All users were unblocked successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+      security:
+        - auth:
+            - auth:api
+  /users:
+    post:
+      description: Get filtered user list
+      operationId: getUserList
+      tags:
+        - User
+        - Filter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filterType:
+                  description: Event type |
+                    All params will be ignored if filterType==“favorites”,
+                    except "page" param
+                  default: nearby
+                  enum:
+                    - nearby
+                    - recent
+                    - favorites
+                distance:
+                  description: Initial search distance
+                  type: number
+                  format: float
+                  minimum: 0
+                  example: 50
+                filterOnline:
+                  description: Search online users
+                  type: boolean
+                  example: false
+                filterPics:
+                  description: Search users who has public photos
+                  type: boolean
+                  example: true
+                filterVideos:
+                  description: Search users who has public videos
+                  type: boolean
+                  example: false
+                filterAge:
+                  description: Search by age. Two range values, separated by comma
+                  type: string
+                  example: 20,45
+                filterHeight:
+                  description: Search by height. Two range values, separated by comma
+                  type: string
+                  example: 150,215
+                filterWeight:
+                  description: Search by weight. Two range values, separated by comma
+                  type: string
+                  example: 45,125
+                filterBody:
+                  description: Search by body type. String values, separated by commas
+                  type: string
+                  example: average,stocky,muscular,athletic,slim
+                filterDrugs:
+                  description: Search by body drugs style. String values, separated by commas
+                  type: string
+                  example: no,socially,yes
+                filterHiv:
+                  description: Search by body HIV status. String values, separated by commas
+                  type: string
+                  example: prep,undetectable,negative,positive,unknown
+                filterPenis:
+                  description: Search by weewee. String values, separated by commas
+                  type: string
+                  example: S,L,XX
+                filterPosition:
+                  description: Search by preferred position. String values, separated by commas
+                  type: string
+                  example: top,versatile,more_top,more_bottom,bottom
+                page:
+                  description: Page number
+                  type: integer
+                  example: 0
+              required:
+                - FilterType
+      responses:
+        '200':
+          description: User list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  distance:
+                    description: |
+                      Final search distance. It may be increased to 250 or 500 eventually if
+                      there’s not enough users around within initial search distance.
+                    type: integer
+                    nullable: true
+                    example: 500
+                  usersAround:
+                    description: Array of users around
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserDiscoverAttributes'
+      security:
+        - auth:
+            - auth:api
+  /events:
+    post:
+      description: Get events list
+      operationId: getEventList
+      tags:
+        - Event
+        - Filter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                type:
+                  description: Event types
+                  type: string
+                  items:
+                    description: Event type
+                    type: string
+                    example: (friends|fun|bang)
+                date:
+                  description: Get events planned at this date only
+                  type: string
+                  example: "2020-01-01"
+                  pattern: ^\d{4}-\d{2}-\d{2}$
+                page:
+                  description: Page number
+                  type: integer
+                  example: 0
+                limit:
+                  description: Hybrid limiter. It limits dates count if "date" is empty. Otherwise it limits events count.
+                  type: integer
+                  example: 10
+                except:
+                  description: Event ids which are already loaded
+                  type: array
+                  items:
+                    description: Event id
+                    type: integer
+                    minimum: 1
+              required:
+                - type
+                - page
+                - limit
+      responses:
+        '200':
+          description: Event list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventFilterEntry'
+      security:
+        - auth:
+            - auth:api
+  /event:
+    post:
+      description: Create an event
+      operationId: createEvent
+      tags:
+        - Event
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                title:
+                  description: Event title
+                  type: string
+                  example: My super event!
+                description:
+                  description: Event description. Required if type != "bang".
+                  type: string
+                  example: Bla bla
+                event_date:
+                  description: An event date
+                  type: string
+                  example: "2020-01-01"
+                  pattern: ^\d{4}-\d{2}-\d{2}$
+                type:
+                  description: Event's type
+                  type: string
+                  example: (friends|fun|bang)
+                chemsfriendly:
+                  description: Chemicals allowed. Required if type != "bang".
+                  example: true
+                  type: boolean
+                is_profile_linked:
+                  description: Event creator pinned his profile to the event. Required if type != "bang".
+                  type: boolean
+                  example: true
+                time:
+                  description: Event time (free format)
+                  type: string
+                  example: 23:00 - 5:00
+                location:
+                  description: Event's additional location details
+                  example: Big white house
+                  type: string
+                  nullable: true
+                locality:
+                  description: Event's city
+                  example: Berlin
+                  type: string
+                  nullable: true
+                state:
+                  description: Event's state
+                  example: North Rhine-Westphalia
+                  type: string
+                  nullable: true
+                country:
+                  description: Event's country
+                  example: Germany
+                  type: string
+                  nullable: true
+                country_code:
+                  description: Event's country code
+                  example: US
+                  type: string
+                  nullable: true
+                address:
+                  description: Event's address
+                  example: Auguststraße 29c, 10119 Berlin, Germany
+                  type: string
+                lat:
+                  description: Event's latitude. Required if type != "bang".
+                  type: number
+                  format: float
+                  example: 52.52000800
+                lng:
+                  description: Event's longitude. Required if type != "bang".
+                  type: number
+                  format: float
+                  example: 52.52000800
+                address_type:
+                  description: Event's address visibility policy
+                  default: full_address
+                  enum:
+                    - full_address
+                    - city_only
+                tags:
+                  type: array
+                  items:
+                    type: string
+                    example: Super Tag!
+                photos:
+                  description: Photos ids
+                  type: array
+                  items:
+                    type: integer
+                    example: 300
+                videos:
+                  description: Videos ids
+                  type: array
+                  items:
+                    type: integer
+                    example: 500
+                preview_photo:
+                  $ref: '#/components/schemas/PhotoAllAttributes'
+              required:
+                - title
+                - time
+                - event_date
+                - type
+                - address_type
+                - address
+      responses:
+        '422':
+          description: Error description or key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+        '200':
+          description: Created event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+      security:
+        - auth:
+            - auth:api
+  /event/{eventId}:
+    get:
+      description: 'Get any event’s info'
+      operationId: getEvent
+      tags:
+        - Event
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+            minimum: 1
+      responses:
+        '200':
+          description: "Event's data"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+      security:
+        - auth:
+            - auth:api
+    patch:
+      description: 'Update an event’s data'
+      operationId: updateEvent
+      tags:
+        - Event
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  description: Event title
+                  type: string
+                  example: My super event!
+                description:
+                  description: Event description. Required if type != "bang".
+                  type: string
+                  example: Bla bla
+                event_date:
+                  description: An event date
+                  type: string
+                  example: "2020-01-01"
+                  pattern: ^\d{4}-\d{2}-\d{2}$
+                type:
+                  description: Event's type
+                  type: string
+                  example: (friends|fun|bang)
+                chemsfriendly:
+                  description: Chemicals allowed. Required if type != "bang".
+                  example: true
+                  type: boolean
+                is_profile_linked:
+                  description: Event creator pinned his profile to the event. Required if type != "bang".
+                  type: boolean
+                  example: true
+                time:
+                  description: Event time (free format)
+                  type: string
+                  example: 23:00 - 5:00
+                location:
+                  description: Event's additional location details
+                  example: Big white house
+                  type: string
+                  nullable: true
+                locality:
+                  description: Event's city
+                  example: Berlin
+                  type: string
+                  nullable: true
+                state:
+                  description: Event's state
+                  example: North Rhine-Westphalia
+                  type: string
+                  nullable: true
+                country:
+                  description: Event's country
+                  example: Germany
+                  type: string
+                  nullable: true
+                country_code:
+                  description: Event's country code
+                  example: US
+                  type: string
+                  nullable: true
+                address:
+                  description: Event's address
+                  example: Auguststraße 29c, 10119 Berlin, Germany
+                  type: string
+                lat:
+                  description: Event's latitude. Required if type != "bang".
+                  type: number
+                  format: float
+                  example: 52.52000800
+                lng:
+                  description: Event's longitude. Required if type != "bang".
+                  type: number
+                  format: float
+                  example: 52.52000800
+                address_type:
+                  description: Event's address visibility policy
+                  default: full_address
+                  enum:
+                    - full_address
+                    - city_only
+                tags:
+                  description: Tags array
+                  type: array
+                  items:
+                    type: string
+                    example: Super Tag!
+                photos:
+                  description: Event photos
+                  type: array
+                  items:
+                    type: integer
+                    example: 800
+                videos:
+                  description: Event videos
+                  type: array
+                  items:
+                    type: integer
+                    example: 900
+                preview_photo:
+                  $ref: '#/components/schemas/PhotoAllAttributes'
+      responses:
+        '422':
+          description: Error description or key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+        '200':
+          description: Updated event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+      security:
+        - auth:
+            - auth:api
+    delete:
+      description: |
+        Delete an event.
+        NOTE: Event and all it’s reports will be deleted from DB.
+      operationId: deleteEvent
+      tags:
+        - Event
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+            minimum: 1
+      responses:
+        '500':
+          description: "Cannot delete an event"
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: false
+        '200':
+          description: "Event was deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+      security:
+        - auth:
+            - auth:api
+  /event/report:
+    post:
+      description: Send an event report
+      operationId: reportEvent
+      tags:
+        - Event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  description: Event's id
+                  type: integer
+                  example: 4000
+                  minimum: 1
+                reason:
+                  description: Reason
+                  default: wrong_category
+                  enum:
+                    - wrong_category
+                    - illegal
+                    - spam
+                    - under_age
+                    - other
+              required:
+                - id
+                - reason
+      responses:
+        '200':
+          description: Report sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  trans:
+                    description: Result code
+                    type: string
+                    example: events.report_success
+  /event/like:
+    post:
+      description: Create a “like” entry
+      operationId: likeEvent
+      tags:
+        - Event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId:
+                  description: Event's id
+                  type: integer
+                  example: 4000
+                  minimum: 1
+              required:
+                - eventId
+      responses:
+        '200':
+          description: Event liked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+        '422':
+          description: 'Error'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: User already liked the event
+  /event/dislike:
+    post:
+      description: 'Remove a “like” entry'
+      operationId: dislikeEvent
+      tags:
+        - Event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId:
+                  description: Event's id
+                  type: integer
+                  example: 4000
+                  minimum: 1
+              required:
+                - eventId
+      responses:
+        '200':
+          description: Event disliked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+        '422':
+          description: 'Error'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: User didn’t liked the event
+  /event/membership:
+    post:
+      description: Create a “like” entry
+      operationId: likeEvent
+      tags:
+        - Event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId:
+                  description: Event's id
+                  type: integer
+                  example: 4000
+                  minimum: 1
+                userId:
+                  description: User who should chage his status (for host only, action=accept|reject|remove)
+                  type: integer
+                  example: 50000
+                  minimum: 1
+                action:
+                  description: Action to perform
+                  type: string
+                  example: (request|leave|accept|reject|remove)
+              required:
+                - eventId
+                - action
+      responses:
+        '200':
+          description: Updated event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  full:
+                    $ref: '#/components/schemas/Event'
+                  general:
+                    $ref: '#/components/schemas/EventGeneralAttributes'
+                  discover:
+                    $ref: '#/components/schemas/EventDiscoverAttributes'
+        '422':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+  /conversations:
+    get:
+      description: Get the list of conversations
+      operationId: getConversations
+      tags:
+        - Chat
+      parameters:
+        - name: group
+          in: query
+          required: true
+          schema:
+            type: string
+            default: all
+            enum:
+              - all
+              - unread
+              - favorites
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Array of conversations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  all:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/Conversation'
+                        - $ref: '#/components/schemas/GroupConversation'
+                  unread:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Conversation'
+                  favorites:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Conversation'
+      security:
+        - auth:
+            - auth:api
+  /conversation/user/{userId}/read:
+    post:
+      description: 'Mark all conversation messages as read'
+      operationId: readConversation
+      tags:
+        - Chat
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+            minimum: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+  /conversation/event/{eventId}/user/{userId}/read:
+    post:
+      description: 'Mark all event conversation messages as read'
+      operationId: readEventConversation
+      tags:
+        - Chat
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+            minimum: 1
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+            minimum: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+  /conversation/user/{userId}:
+    delete:
+      description: 'Mark all conversation messages as deleted for sender and recipient'
+      operationId: removeConversation
+      tags:
+        - Chat
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+            minimum: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+  /conversation/event/{eventId}/user/{userId}:
+    delete:
+      description: 'Mark all conversation messages as deleted for sender and recipient'
+      operationId: removeConversation
+      tags:
+        - Chat
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+            minimum: 1
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+            minimum: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+  /messages/{userId}:
+    get:
+      description: 'Get the last page of the messages list'
+      operationId: getMessages
+      tags:
+        - Chat
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+            minimum: 1
+        - name: maxTimestamp
+          in: query
+          required: false
+          schema:
+            description: Max timetamp for pagination.
+            type: string
+            format: date-time
+            example: 2020-01-01T00:00:00.000000Z
+      responses:
+        '200':
+          description: Messages list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+      security:
+        - auth:
+            - auth:api
+  /messages/event/{eventId}/user/{userId}:
+    get:
+      description: 'Get the last page of the messages list'
+      operationId: getEventMessages
+      tags:
+        - Chat
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+        - name: maxTimestamp
+          in: query
+          required: false
+          schema:
+            description: Max timetamp for pagination.
+            type: string
+            format: date-time
+            example: 2020-01-01T00:00:00.000000Z
+      responses:
+        '200':
+          description: Messages list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+      security:
+        - auth:
+            - auth:api
+  /messages/group/{eventId}:
+    get:
+      description: 'Get the last page of the messages list'
+      operationId: getGroupMessages
+      tags:
+        - Chat
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+        - name: maxTimestamp
+          in: query
+          required: false
+          schema:
+            description: Max timetamp for pagination.
+            type: string
+            format: date-time
+            example: 2020-01-01T00:00:00.000000Z
+      responses:
+        '200':
+          description: Messages list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+      security:
+        - auth:
+            - auth:api
+  /message:
+    post:
+      description: 'Send a text/location message'
+      operationId: sendMessage
+      tags:
+        - Chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  description: User's id. Required if channel = "event" or "user"
+                  type: integer
+                  example: 3000
+                  minimum: 1
+                eventId:
+                  description: Event's id. Required if channel = "event" or "group"
+                  type: integer
+                  example: 3000
+                  minimum: 1
+                msgType:
+                  description: Message type
+                  type: string
+                  example: (text|location)
+                message:
+                  description: Message text
+                  type: string
+                  example: Heyy...
+                channel:
+                  description: Message channel, depends on chat mode
+                  type: string
+                  example: (user|event|group)
+              required:
+                - message
+                - msgType
+                - channel
+      responses:
+        '200':
+          description: Updated/created conversation entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+        '422':
+          description: Message not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+      security:
+        - auth:
+            - auth:api
+    delete:
+      description: 'Mark message as deleted'
+      operationId: deleteMessage
+      tags:
+        - Chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                messageId:
+                  description: Message's id
+                  type: integer
+                  example: 3000
+                  minimum: 1
+                messageGroup:
+                  description: Event's id
+                  default: user
+                  minimum: 1
+                  enum:
+                    - event
+                    - user
+                    - group
+              required:
+                - messageId
+                - messageGroup
+      responses:
+        '200':
+          description: Message deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    $ref: '#/components/schemas/Message'
+        '422':
+          description: Message not deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+      security:
+        - auth:
+            - auth:api
+  /messages:
+    post:
+      description: 'Send multiple photo/video messages'
+      operationId: sendMessages
+      tags:
+        - Chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  description: User's id. Required if channel = "event" or "user"
+                  type: integer
+                  example: 3000
+                  minimum: 1
+                eventId:
+                  description: Event's id. Required if channel = "event" or "group"
+                  type: integer
+                  example: 4000
+                  minimum: 1
+                msgType:
+                  description: Message type
+                  type: string
+                  example: (photo|video)
+                channel:
+                  description: Message channel, depends on chat mode
+                  type: string
+                  example: (user|event|group)
+                photosIds:
+                  description: Array of photo ids. Required if msgType=photo
+                  type: array
+                  items:
+                    type: integer
+                    example: 450
+                    minimum: 1
+                videosIds:
+                  description: Array of video ids. Required if msgType=video
+                  type: array
+                  items:
+                    type: integer
+                    example: 450
+                    minimum: 1
+              required:
+                - msgType
+                - channel
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                description: Updated/created conversation entry and messages list
+                type: object
+                properties:
+                  conversation:
+                    $ref: '#/components/schemas/Conversation'
+                  messages:
+                    description: Array of sent messages
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+        '422':
+          description: Message not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+      security:
+        - auth:
+            - auth:api
+  /photo:
+    post:
+      description: 'Upload a photo'
+      operationId: uploadPhoto
+      tags:
+        - Media
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                photo:
+                  description: Photo file
+                  type: string
+                  format: binary
+                  example: <file>
+              required:
+                - photo
+      responses:
+        '200':
+          description: New photo attributes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoGeneralAttributes'
+        '422':
+          description: Upload error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+      security:
+        - auth:
+            - auth:api
+  /photo/{photoId}:
+    patch:
+      description: Change photo's attributes
+      operationId: updatePhoto
+      tags:
+        - Media
+      parameters:
+        - name: photoId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 9500
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                photo_orig:
+                  description: Image file
+                  type: string
+                  format: binary
+                  example: <image>
+                actions:
+                  description: Crop/rotate image actions payload. A valid stringified JSON.
+                  type: string
+                  example: "{\"rotation\":90,\"crop\":{\"x\":0,\"y\":351,\"width\":450,\"height\":429}}"
+      responses:
+        '422':
+          description: Error description or key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+        '200':
+          description: Updated photo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoAllAttributes'
+      security:
+        - auth:
+            - auth:api
+    delete:
+      description: Delete a photo from the user's gallery, also from events and messages.
+      operationId: deletePhoto
+      tags:
+        - Media
+      parameters:
+        - name: photoId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 9500
+            minimum: 1
+      responses:
+        '422':
+          description: Photo doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+        '200':
+          description: Updated photo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+      security:
+        - auth:
+            - auth:api
+  /photo/{photoId}/default/{slot}:
+    patch:
+      description: Set photo as default
+      operationId: setPhotoAsDefault
+      tags:
+        - Media
+      parameters:
+        - name: photoId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 9500
+            minimum: 1
+        - name: slot
+          in: path
+          required: true
+          schema:
+            type: string
+            example: (clear|adult)
+      responses:
+        '422':
+          description: Photo not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+        '200':
+          description: Updated photo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoAllAttributes'
+      security:
+        - auth:
+            - auth:api
+  /photo/{photoId}/visibility/{visibility}:
+    patch:
+      description: Change the photo’s visibility
+      operationId: updatePhotoVisibility
+      tags:
+        - Media
+      parameters:
+        - name: photoId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 9500
+            minimum: 1
+        - name: visibility
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/Visibility'
+      responses:
+        '422':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+        '200':
+          description: Updated photo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoAllAttributes'
+      security:
+        - auth:
+            - auth:api
+  /video:
+    post:
+      description: Upload a video
+      operationId: uploadVideo
+      tags:
+        - Media
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                video:
+                  description: Video file
+                  type: string
+                  format: binary
+                  example: <file>
+                hash:
+                  description: Random video hash
+                  type: string
+                  example: g9qhf523glkg8
+                  minLength: 6
+                  maxLength: 128
+              required:
+                - video
+                - hash
+      responses:
+        '200':
+          description: Upload success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+        '422':
+          description: Upload error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+      security:
+        - auth:
+            - auth:api
+  /video/{videoId}/visibility/{visibility}:
+    patch:
+      description: Change the video’s visibility
+      operationId: updateVideoVisibility
+      tags:
+        - Media
+      parameters:
+        - name: videoId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 9500
+            minimum: 1
+        - name: visibility
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/Visibility'
+      responses:
+        '422':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+        '200':
+          description: Updated video
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+      security:
+        - auth:
+            - auth:api
+  /video/{videoId}:
+    delete:
+      description: Delete a video from the user's gallery, also from events and messages.
+      operationId: deleteVideo
+      tags:
+        - Media
+      parameters:
+        - name: videoId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 9500
+            minimum: 1
+      responses:
+        '422':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+      security:
+        - auth:
+            - auth:api
+  /visitors:
+    get:
+      description: Get current user’s visitors
+      operationId: getVisitors
+      tags:
+        - Notifications
+      parameters:
+        - name: lastVisitId
+          description: Last visit’s id (use it for pagination)
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 3500
+      responses:
+        '200':
+          description: List of visitors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Visit'
+      security:
+        - auth:
+            - auth:api
+  /visited:
+    get:
+      description: Get current user’s visits
+      operationId: getVisits
+      tags:
+        - Notifications
+      parameters:
+        - name: lastVisitId
+          description: Last visit’s id (use it for pagination)
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 3500
+      responses:
+        '200':
+          description: List of visits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Visit'
+      security:
+        - auth:
+            - auth:api
+  /notifications:
+    get:
+      description: Get notifications
+      operationId: getNotifications
+      tags:
+        - Notifications
+      parameters:
+        - name: lastNotificationId
+          description: Last notification’s id (use it for pagination)
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 3500
+      responses:
+        '200':
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+      security:
+        - auth:
+            - auth:api
+  /visit:
+    post:
+      description: Create a visit entry
+      operationId: createVisit
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  description: Visited user's id
+                  type: integer
+                  example: 4000
+                  minimum: 1
+              required:
+                - userId
+      responses:
+        '200':
+          description: Array of visited users to replace the current list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Visited'
+      security:
+        - auth:
+            - auth:api
+  /wave:
+    post:
+      description: Create a wave entry
+      operationId: createWave
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipientId:
+                  description: Recipient's user id
+                  type: integer
+                  example: 4000
+                  minimum: 1
+                type:
+                  $ref: '#/components/schemas/Wave'
+              required:
+                - recipientId
+                - type
+      responses:
+        '422':
+          description: Error message or token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorKey'
+        '200':
+          description: New notification entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+      security:
+        - auth:
+            - auth:api
+  /tag:
+    post:
+      description: Add a tag to profile
+      operationId: addTag
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: Tag name
+                  type: string
+                  example: Super Tag!
+              required:
+                - name
+      responses:
+        '200':
+          description: Tag attached to profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '204':
+          description: Tag have already been attached to profile
+      security:
+        - auth:
+            - auth:api
+  /tag/{tagId}:
+    delete:
+      description: Remove a tag from profile
+      operationId: deleteTag
+      tags:
+        - User
+      parameters:
+        - name: tagId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 3500
+      responses:
+        '200':
+          description: Tag successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+      security:
+        - auth:
+            - auth:api
+  /account/delete:
+    post:
+      description: Delete an account
+      operationId: deleteAccount
+      tags:
+        - Account
+      responses:
+        '200':
+          description: Account was successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+      security:
+        - auth:
+            - auth:api
+  /account/deactivate:
+    post:
+      description: Deactivate an account
+      operationId: deactivateAccount
+      tags:
+        - Account
+      responses:
+        '200':
+          description: Account was successfully deactivated
+          content:
+            application/json:
+              schema:
+                type: string
+                example: 'deactivated'
+      security:
+        - auth:
+            - auth:api
+  /account/activate:
+    post:
+      description: Activate an account
+      operationId: activateAccount
+      tags:
+        - Account
+      responses:
+        '200':
+          description: Account was successfully activated
+          content:
+            application/json:
+              schema:
+                type: string
+                example: 'activated'
+      security:
+        - auth:
+            - auth:api
+  /subscription/apple:
+    post:
+      description: Activate apple product or subscription (after payment)
+      operationId: applePayment
+      tags:
+        - Subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transactionId:
+                  description: Transaction ID
+                  type: string
+                  example: 1000000769462219
+                transactionReceipt:
+                  description: Encoded transaction reciept
+                  type: string
+                  example: MIIVYwYJKoZIhvcNAQc...+MJ+r6Qx3EM90+lfNvjVQ/TFDg==
+              required:
+                - transactionId
+                - transactionReceipt
+      responses:
+        '200':
+          description: Apple product or subscription was successfully activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppleSubscription'
+      security:
+        - auth:
+            - auth:api
+  /subscription/google:
+    post:
+      description: Activate google product or subscription (after payment)
+      operationId: googlePayment
+      tags:
+        - Subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  description: Product ID
+                  type: string
+                  example: buddy.pro.1m.abo
+                transactionId:
+                  description: Transaction ID
+                  type: string
+                  example: GPA.3357-9268-1251-95494
+                purchaseToken:
+                  description: Encoded transaction reciept
+                  type: string
+                  example: pdhijnennljpipgjdfomkeho.AO-J1Oz...
+              required:
+                - productId
+                - transactionId
+                - purchaseToken
+      responses:
+        '200':
+          description: Google product or subscription was successfully activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleSubscription'
+      security:
+        - auth:
+            - auth:api
+
+# ===========================================================================
+# ===========================    SCHEMAS    =================================
+# ===========================================================================
+components:
+  schemas:
+    EnumYesNo:
+      default: yes
+      enum:
+        - yes
+        - no
+    DateTime:
+      description: Date and time
+      type: string
+      example: "2000-01-01 00:00:00"
+    Visibility:
+      description: Visibility
+      default: public
+      enum:
+        - public
+        - private
+    EnumYesNoDefaultNo:
+      default: no
+      enum:
+        - yes
+        - no
+    Lang:
+      description: Language
+      default: en
+      enum:
+        - en
+        - de
+        - fr
+        - it
+        - nl
+    Ok:
+      type: string
+      example: ok
+    ErrorKey:
+      type: object
+      properties:
+        error:
+          type: string
+          example: <Error message or token>
+    SuccessKey:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+    Login:
+      description: User's login
+      type: string
+      maxLength: 255
+      example: adam69
+    Email:
+      description: User's email
+      type: string
+      format: email
+      maxLength: 255
+      example: adam69@gmail.com
+    Password:
+      description: User's password
+      type: string
+      format: password
+      example: xxxxxx
+    NewPassword:
+      description: User's new password
+      type: string
+      format: password
+      example: zzzzzz
+    DateOfBirth:
+      description: Date of birth
+      type: string
+      example: "2000-01-01"
+      pattern: ^\d{4}-\d{2}-\d{2}$
+    UnitSystem:
+      description: Unit system
+      default: metric
+      enum:
+        - metric
+        - imperial
+    EmailReminders:
+      description: Email reminders period
+      default: weekly
+      enum:
+        - daily
+        - weekly
+        - monthly
+        - never
+    CountryCode:
+      description: Country code
+      type: string
+      example: US
+      pattern: ^[A-Z]{2}$
+    LocationType:
+      description: Geolocation mode
+      default: automatic
+      enum:
+        - manual
+        - automatic
+    UserStatus:
+      description: User's status |
+        Usually it’s eq. “active” in public, even if user is in “ghosted” status (due to anti-spam policy)
+      default: active
+      enum:
+        - active
+        - suspended
+        - deactivated
+        - ghosted
+    UserDrugs:
+      description: Drugs policy
+      default: socially
+      enum:
+        - yes
+        - no
+        - socially
+    UserHiv:
+      description: HIV status
+      default: negative
+      enum:
+        - positive
+        - negative
+        - undetectable
+        - prep
+        - unknown
+    UserPenis:
+      description: Weewee size
+      default: XL
+      enum:
+        - S
+        - M
+        - L
+        - XL
+        - XXL
+    UserPosition:
+      description: Preferred position
+      default: versatile
+      enum:
+        - top
+        - more_top
+        - versatile
+        - more_bottom
+        - bottom
+    UserGroup:
+      description: User's group
+      default: member
+      enum:
+        - member
+        - staff
+    UserBody:
+      description: User's body type
+      default: athletic
+      enum:
+        - slim
+        - average
+        - athletic
+        - muscular
+        - stocky
+    UserLat:
+      description: User's current latitude. Changes while travelling.
+      type: number
+      format: float
+      example: 52.52000800
+    UserLng:
+      description: User's current longitude. Changes while travelling.
+      type: number
+      format: float
+      example: 13.40495400
+    UserAddressLat:
+      description: User's origin latitude. Shouldn't change within REFRESH_ADDRESS_FOR_LAT_LNG_CHANGE_METERS.
+      type: number
+      format: float
+      example: 52.52000800
+    UserAddressLng:
+      description: User's origin longitude. Shouldn't change within REFRESH_ADDRESS_FOR_LAT_LNG_CHANGE_METERS.
+      type: number
+      format: float
+      example: 13.40495400
+    Wave:
+      description: Wave type. Used only in wave notifications (taps)
+      default: hand
+      enum:
+        - hand
+        - fire
+        - sweat
+        - devil
+        - video
+        - rocket
+        - beer
+        - ring
+        - now
+        - apple
+        - love
+        - banana
+    Tag:
+      description: Tag
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Super Tag!
+    ProfileOptions:
+      description: Profile options. A stateless object.
+      type: object
+      additionalProperties:
+        type: object
+        additionalProperties:
+          type: string
+    UserAllAttributes:
+      type: object
+      properties:
+        id:
+          description: User's id
+          type: integer
+          example: 1
+        name:
+          $ref: '#/components/schemas/Login'
+        about:
+          description: User's description
+          type: string
+          example: My description
+        user_group:
+          $ref: '#/components/schemas/UserGroup'
+        address:
+          description: User's address
+          type: string
+          example: Baarerstrasse 37 6300
+        body:
+          $ref: '#/components/schemas/UserBody'
+        dob:
+          $ref: '#/components/schemas/DateOfBirth'
+        language:
+          $ref: '#/components/schemas/Lang'
+        drugs:
+          $ref: '#/components/schemas/UserDrugs'
+        email:
+          $ref: '#/components/schemas/Email'
+        headline:
+          description: User's headline
+          type: string
+          example: Hey!
+        height:
+          description: User's height
+          type: integer
+          example: 175
+        weight:
+          description: User's weight
+          type: integer
+          example: 75
+        hiv:
+          $ref: '#/components/schemas/UserHiv'
+        lat:
+          $ref: '#/components/schemas/UserLat'
+        lng:
+          $ref: '#/components/schemas/UserLng'
+        penis:
+          $ref: '#/components/schemas/UserPenis'
+        position:
+          $ref: '#/components/schemas/UserPosition'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        last_active:
+          $ref: '#/components/schemas/DateTime'
+        his_profile_viewed:
+          description: User profile views count
+          type: integer
+          example: 236
+        viewed_other_profiles:
+          description: User viewed other profiles count
+          type: integer
+          example: 2456
+        show_age:
+          $ref: '#/components/schemas/EnumYesNo'
+        unit_system:
+          $ref: '#/components/schemas/UnitSystem'
+        email_reminders:
+          $ref: '#/components/schemas/EmailReminders'
+        location_type:
+          $ref: '#/components/schemas/LocationType'
+        locality:
+          description: User's city
+          type: string
+          example: Berlin
+        state:
+          description: User's state
+          type: string
+          example: North Rhine-Westphalia
+        country:
+          description: User's country
+          type: string
+          example: Germany
+        country_code:
+          $ref: '#/components/schemas/CountryCode'
+        address_lat:
+          $ref: '#/components/schemas/UserAddressLat'
+        address_lng:
+          $ref: '#/components/schemas/UserAddressLng'
+        has_notifications:
+          description: Any type of tap, event or visitor signal was recieved
+          type: boolean
+          example: false
+        has_new_notifications:
+          description: A "Tap signal" or "Event liked" signal was recieved
+          type: boolean
+          example: false
+        has_new_visitors:
+          description: A "New visitor" signal was recieved
+          type: boolean
+          example: false
+        has_new_messages:
+          description: A "New message" signal was recieved
+          type: boolean
+          example: false
+        has_event_notifications:
+          description: A "Event updated" signal was recieved
+          type: boolean
+          example: false
+        subscribed:
+          $ref: '#/components/schemas/EnumYesNo'
+        notification_sound:
+          $ref: '#/components/schemas/EnumYesNo'
+        push_notifications:
+          $ref: '#/components/schemas/EnumYesNo'
+        view_sensitive_events:
+          $ref: '#/components/schemas/EnumYesNo'
+        view_sensitive_media:
+          description: Show adult content flag
+          type: boolean
+          example: true
+        status:
+          $ref: '#/components/schemas/UserStatus'
+        deleted_at:
+          $ref: '#/components/schemas/DateTime'
+        discreet_mode:
+          description: Invisible mode used by PRO users
+          type: boolean
+          example: false
+        invisible:
+          description: Invisible mode used by staff users
+          type: boolean
+          example: false
+        isPro:
+          description: User is PRO
+          type: boolean
+          example: true
+    UserPublicAttributes:
+      type: object
+      properties:
+        id:
+          description: User's id
+          type: integer
+          example: 1
+        about:
+          description: User's description
+          type: string
+          nullable: true
+          example: Hey!
+        age:
+          description: User's age
+          type: integer
+          example: 27
+        body:
+          $ref: '#/components/schemas/UserBody'
+        country:
+          description: User's country
+          type: string
+          example: Germany
+        country_code:
+          $ref: '#/components/schemas/CountryCode'
+        deleted_at:
+          $ref: '#/components/schemas/DateTime'
+        distanceMeters:
+          description: Distance to current user
+          type: number
+          format: float
+          example: 250300
+          minimum: 0
+        dob:
+          $ref: '#/components/schemas/DateOfBirth'
+        drugs:
+          $ref: '#/components/schemas/UserDrugs'
+        height:
+          description: User's height
+          type: integer
+          example: 175
+        weight:
+          description: User's weight
+          type: integer
+          example: 75
+        hiv:
+          $ref: '#/components/schemas/UserHiv'
+        isFavorite:
+          type: boolean
+          example: false
+        locality:
+          description: User's city
+          type: string
+          example: Berlin
+        name:
+          $ref: '#/components/schemas/Login'
+        penis:
+          $ref: '#/components/schemas/UserPenis'
+        photo_orig:
+          description: Original photo's url
+          type: string
+          example: https://barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_orig.jpg
+        photo_small:
+          description: Small photo's url
+          type: string
+          example: https://barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_180x180.jpg
+        position:
+          $ref: '#/components/schemas/UserPosition'
+        public_photos:
+          description: Array of public photos
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoAllAttributes'
+        public_videos:
+          description: Array of public videos
+          type: array
+          items:
+            $ref: '#/components/schemas/Video'
+        state:
+          description: User's state
+          type: string
+          example: North Rhine-Westphalia
+        status:
+          $ref: '#/components/schemas/UserStatus'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        user_group:
+          $ref: '#/components/schemas/UserGroup'
+        isOnline:
+          description: User is online now (green triangle on avatar)
+          type: boolean
+          example: true
+        wasRecentlyOnline:
+          description: User was recently online (yellow triangle on avatar)
+          type: boolean
+          example: false
+        tap:
+          $ref: '#/components/schemas/Notification'
+    UserDiscoverAttributes:
+      type: object
+      properties:
+        id:
+          description: User's id
+          type: integer
+          example: 1
+        name:
+          $ref: '#/components/schemas/Login'
+        user_group:
+          $ref: '#/components/schemas/UserGroup'
+        has_videos:
+          description: User has public videos flag
+          type: boolean
+          example: false
+        isFavorite:
+          description: User is favourite for current user
+          type: boolean
+          example: false
+        isOnline:
+          description: User is online now (green triangle on avatar)
+          type: boolean
+          example: false
+        wasRecentlyOnline:
+          description: User was recently online (yellow triangle on avatar)
+          type: boolean
+          example: false
+        country:
+          description: User's country
+          type: string
+          example: Germany
+        locality:
+          description: User's city
+          type: string
+          example: Berlin
+        photo:
+          description: User's photo url
+          type: string
+          example: https://barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_180x180.jpg
+        position:
+          $ref: '#/components/schemas/UserPosition'
+        age:
+          description: User's age
+          type: integer
+          example: 27
+        distanceMeters:
+          description: Distance to current user
+          type: number
+          format: float
+          example: 250300
+          minimum: 0
+        weight:
+          description: User's weight
+          type: integer
+          example: 75
+        height:
+          description: User's height
+          type: integer
+          example: 175
+    UserGeneralAttributes:
+      type: object
+      properties:
+        id:
+          description: User's id
+          type: integer
+          example: 1
+        name:
+          $ref: '#/components/schemas/Login'
+        photo:
+          description: "Photo url. Size: 180x180 px."
+          type: string
+          example: https://barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_180x180.jpg
+        isOnline:
+          description: User is online now (green triangle on avatar)
+          type: boolean
+          example: false
+        wasRecentlyOnline:
+          description: User was recently online (yellow triangle on avatar)
+          type: boolean
+          example: false
+        isFavorite:
+          description: User is favourite for current user
+          type: boolean
+          example: false
+    UserGroupMessageAttributes:
+      type: object
+      properties:
+        id:
+          description: User's id
+          type: integer
+          example: 1
+        name:
+          $ref: '#/components/schemas/Login'
+        photo:
+          description: "Photo url. Size: 180x180 px."
+          type: string
+          example: https://barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_180x180.jpg
+        isOnline:
+          description: User is online now (green triangle on avatar)
+          type: boolean
+          example: false
+        wasRecentlyOnline:
+          description: User was recently online (yellow triangle on avatar)
+          type: boolean
+          example: false
+        isFavorite:
+          description: User is favourite for current user
+          type: boolean
+          example: false
+        height:
+          description: User's height
+          type: integer
+          example: 175
+        weight:
+          description: User's weight
+          type: integer
+          example: 75
+        position:
+          $ref: '#/components/schemas/UserPosition'
+        age:
+          description: User's age
+          type: integer
+          example: 27
+    EventMemberAttributes:
+      type: object
+      properties:
+        id:
+          description: User's id
+          type: integer
+          example: 1
+        name:
+          $ref: '#/components/schemas/Login'
+        photo:
+          description: "Photo url. Size: 180x180 px."
+          type: string
+          example: https://barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_180x180.jpg
+        isOnline:
+          description: User is online now (green triangle on avatar)
+          type: boolean
+          example: false
+        wasRecentlyOnline:
+          description: User was recently online (yellow triangle on avatar)
+          type: boolean
+          example: false
+        isFavorite:
+          description: User is favourite for current user
+          type: boolean
+          example: false
+        status:
+          description: Membership status
+          type: string
+          example: (host|member|requested|rejected|leaved|removed)
+    UserStatusAttributes:
+      type: object
+      properties:
+        id:
+          description: User's id
+          type: integer
+          example: 2
+        distanceMeters:
+          description: Distance to current user
+          type: number
+          format: float
+          example: 250300
+          minimum: 0
+        status:
+          $ref: '#/components/schemas/UserStatus'
+        deleted_at:
+          $ref: '#/components/schemas/DateTime'
+        locality:
+          description: User's city
+          type: string
+          example: Berlin
+        country:
+          description: User's country
+          type: string
+          example: Germany
+        isOnline:
+          description: User is online now (green triangle on avatar)
+          type: boolean
+          example: false
+        wasRecentlyOnline:
+          description: User was recently online (yellow triangle on avatar)
+          type: boolean
+          example: false
+    PhotoAllAttributes:
+      description: Photo attributes
+      type: object
+      properties:
+        id:
+          description: Photo's id
+          type: integer
+          example: 1000
+        user_id:
+          description: User's id uploaded photo
+          type: integer
+          example: 10000
+        nudity_rating:
+          description: Nudity rating; adult value is >= 0.4 (START_NUDITY_RATING)
+          type: number
+          format: float
+          nullable: true
+          example: 0.26
+        visible_to:
+          $ref: '#/components/schemas/Visibility'
+        is_default:
+          $ref: '#/components/schemas/EnumYesNoDefaultNo'
+        manual_rating:
+          description: Manual rating
+          default: unrated
+          enum:
+            - unrated
+            - clear
+            - soft
+            - adult
+            - prohibited
+        photo:
+          description: Photo's relative path without extension
+          type: string
+          example: l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6
+        photo_orig:
+          description: Original photo url
+          type: string
+          example: https://dev.barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_orig.jpg
+        photo_small:
+          description: 180x180 photo url
+          type: string
+          example: https://dev.barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_180x180.jpg
+        status:
+          description: Photo's review status
+          default: queued
+          enum:
+            - queued
+            - reviewed
+            - challenged
+            - overruled
+        reviewed_at:
+          description: A unix timestamp
+          type: integer
+          nullable: true
+          example: 235236346
+        reviewed_by:
+          description: User's id reviewed the photo
+          type: integer
+          nullable: true
+          example: 500
+    PhotoGeneralAttributes:
+      type: object
+      properties:
+        id:
+          description: Photo's id
+          type: integer
+          example: 1000
+        user_id:
+          description: User's id uploaded photo
+          type: integer
+          example: 10000
+        visible_to:
+          $ref: '#/components/schemas/Visibility'
+        is_default:
+          $ref: '#/components/schemas/EnumYesNoDefaultNo'
+        photo:
+          description: Photo's relative path without extension
+          type: string
+          example: l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6
+        photo_orig:
+          description: Original photo url
+          type: string
+          example: https://dev.barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_orig.jpg
+        photo_small:
+          description: 180x180 photo url
+          type: string
+          example: https://dev.barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_180x180.jpg
+    Video:
+      type: object
+      properties:
+        id:
+          description: Video id
+          type: integer
+          example: 10000
+        user_id:
+          description: User's id uploaded the video
+          type: integer
+          example: 1000
+        status:
+          description: Video conversion status
+          default: waiting
+          enum:
+            - waiting
+            - processing
+            - processed
+            - accessible
+        visible_to:
+          $ref: '#/components/schemas/Visibility'
+        hash:
+          description: |
+            A temporary video hash, presented in order to replace a "loading" placeholder
+            in the gallery right after video reached "accessible" status.
+          type: string
+          nullable: true
+          example: 1vn83u1vv20
+        orig_extension:
+          description: Video's original extension
+          type: string
+          example: mp4
+        storage:
+          description: Storage instance. Used for multi-videoserver architechture.
+          type: string
+          example: instance_2
+        thumb_orig:
+          description: Original thumb's url
+          type: string
+          example: https://barebuddy.com/uploads/thumbs/aoB/eoA/B3C/kJDMC4a3wf6nR5kM2t1KsWj5u3JJygp6sm0x5n1a_orig.jpg
+        thumb_small:
+          description: Small thumb's url
+          type: string
+          example: https://barebuddy.com/uploads/thumbs/aoB/eoA/B3C/kJDMC4a3wf6nR5kM2t1KsWj5u3JJygp6sm0x5n1a.gif
+        thumbnail_type:
+          description: Thumbnail extension
+          default: gif
+          enum:
+            - jpg
+            - gif
+        video_name:
+          description: A relative video path without extension
+          type: string
+          example: l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6
+        video_url:
+          type: object
+          properties:
+            mp4:
+              description: |
+                .mp4 videofile url.
+                This videofile becomes accessible after video reached "accessible" status.
+              type: string
+              example: https://dev.barebuddy.com/uploads/videos/P2z/Gfk/wlJ/AiTuTeOmeXPpSu5670o6OGrKJG4NVZMMt4NRtc6u.mp4
+            webm:
+              description: |
+                .webm videofile url.
+                This videofile becomes accessible after video reached "processed" status.
+              type: string
+              example: https://dev.barebuddy.com/uploads/videos/P2z/Gfk/wlJ/AiTuTeOmeXPpSu5670o6OGrKJG4NVZMMt4NRtc6u.webm
+    Tap:
+      type: object
+      properties:
+        id:
+          description: Notification id
+          type: integer
+          example: 10000
+        idate:
+          description: DateTime notification created
+          type: string
+          format: date-time
+          example: 2020-01-01T00:00:00.000000Z
+        user_from:
+          description: Sender id
+          type: integer
+          example: 1000
+        user_to:
+          description: Recipient id
+          type: integer
+          example: 2000
+        event_id:
+          description: Not null if it’s an “event like” (type="event")
+          type: integer
+          nullable: true
+          example: 5000
+        sub_type:
+          $ref: '#/components/schemas/Wave'
+        is_read:
+          description: Recipient checked notification
+          default: no
+          enum:
+            - yes
+            - no
+        type:
+          description: Notification type
+          default: wave
+          enum:
+            - wave
+            - event
+    Notification:
+      type: object
+      properties:
+        id:
+          description: Notification id
+          type: integer
+          example: 10000
+        idate:
+          description: DateTime notification created
+          type: string
+          format: date-time
+          example: 2020-01-01T00:00:00.000000Z
+        user_to:
+          description: Recipient id
+          type: integer
+          example: 2000
+        user_from:
+          $ref: '#/components/schemas/UserGeneralAttributes'
+        event_id:
+          description: Not null if it’s an “event like” (type="event")
+          type: integer
+          nullable: true
+          example: 5000
+        sub_type:
+          $ref: '#/components/schemas/Wave'
+        is_read:
+          description: Recipient checked notification
+          default: no
+          enum:
+            - yes
+            - no
+        type:
+          description: Notification type
+          default: wave
+          enum:
+            - wave
+            - event
+    Visit:
+      type: object
+      properties:
+        id:
+          description: Visit id
+          type: integer
+          example: 10000
+        idate:
+          description: Visit date
+          type: string
+          example: "2020-01-01 00:00:00"
+          pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$
+        invisible:
+          description: Invisible visit
+          type: boolean
+          example: false
+        visited_id:
+          description: Visited user's id
+          type: integer
+          example: 1000
+        visitor_id:
+          description: Visitor user's id
+          type: integer
+          example: 2000
+        visitor:
+          $ref: '#/components/schemas/UserGeneralAttributes'
+    Visited:
+      type: object
+      properties:
+        id:
+          description: Visit id
+          type: integer
+          example: 10000
+        idate:
+          description: Visit date
+          type: string
+          example: "2020-01-01 00:00:00"
+          pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$
+        invisible:
+          description: Invisible visit
+          type: boolean
+          example: false
+        visited_id:
+          description: Visited user's id
+          type: integer
+          example: 1000
+        visitor_id:
+          description: Visitor user's id
+          type: integer
+          example: 2000
+        visited:
+          $ref: '#/components/schemas/UserGeneralAttributes'
+    Event:
+      type: object
+      properties:
+        id:
+          description: Event id
+          type: integer
+          example: 2000
+        user_id:
+          description: Event creator's user id
+          type: integer
+          example: 5000
+        title:
+          description: Event title
+          type: string
+          example: My super event!
+        description:
+          description: Event description
+          type: string
+          example: Bla bla
+        event_date:
+          description: An event date
+          type: string
+          example: "2020-01-01"
+          pattern: ^\d{4}-\d{2}-\d{2}$
+        user_name:
+          description: Event creator's user login. NULL if is_profile_linked="false"
+          type: string
+          nullable: true
+          example: adam69
+        address_type:
+          description: Event's address visibility policy
+          default: full_address
+          enum:
+            - full_address
+            - city_only
+        type:
+          description: Event's type
+          type: string
+          example: (friends|fun|bang)
+        chemsfriendly:
+          description: Chemicals allowed
+          example: true
+          type: boolean
+        sticky:
+          description: Always on the top the events list
+          example: false
+          type: boolean
+        country:
+          description: Event's country
+          example: Germany
+          type: string
+          nullable: true
+        country_code:
+          description: Event's country code
+          example: US
+          type: string
+          nullable: true
+        locality:
+          description: Event's city
+          example: Berlin
+          type: string
+          nullable: true
+        location:
+          description: Event's additional location details
+          example: Big white house
+          type: string
+          nullable: true
+        state:
+          description: Event's state
+          example: North Rhine-Westphalia
+          type: string
+          nullable: true
+        address:
+          description: Event's address
+          example: Auguststraße 29c, 10119 Berlin, Germany
+          type: string
+        lat:
+          description: Event's latitude
+          type: number
+          format: float
+          example: 52.52000800
+        lng:
+          description: Event's longitude
+          type: number
+          format: float
+          example: 52.52000800
+        distanceMeters:
+          description: Distance from current user
+          example: 250300
+          type: number
+          format: float
+        photo:
+          description: Photo's relative path without extension
+          type: string
+          example: l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6
+        photo_orig:
+          description: Original photo url
+          type: string
+          example: https://dev.barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_orig.jpg
+        photo_small:
+          description: Small photo url
+          type: string
+          example: https://dev.barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_180x180.jpg
+        photos:
+          description: Event photos
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoAllAttributes'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        time:
+          description: Event time (free format)
+          type: string
+          example: 23:00 - 5:00
+        user:
+          $ref: '#/components/schemas/UserGeneralAttributes'
+        videos:
+          description: Event videos
+          type: array
+          items:
+            $ref: '#/components/schemas/Video'
+        isLiked:
+          description: Current user liked this event
+          type: boolean
+          example: true
+        isOnline:
+          description: Event's creator is online now (green triangle on avatar)
+          type: boolean
+          example: true
+        wasRecentlyOnline:
+          description: Event's creator was recently online (yellow triangle on avatar)
+          type: boolean
+          example: false
+        is_profile_linked:
+          description: Event creator pinned his profile to the event
+          type: boolean
+          example: true
+        likes:
+          description: Likes count
+          type: integer
+          nullable: true
+          example: 950
+        membership:
+          description: Current user's memebership status
+          type: string
+          example: (host|member|requested|rejected|leaved|removed)
+        members:
+          description: Array of members
+          type: array
+          items:
+            $ref: '#/components/schemas/EventMemberAttributes'
+        members_count:
+          description: Members count
+          type: integer
+          example: 17
+    EventDiscoverAttributes:
+      type: object
+      properties:
+        id:
+          description: Event id
+          type: integer
+          example: 2000
+        title:
+          description: Event title
+          type: string
+          example: My super event!
+        photo_orig:
+          description: Original photo url
+          type: string
+          example: https://dev.barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_orig.jpg
+        photo_small:
+          description: Small photo url
+          type: string
+          example: https://dev.barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_180x180.jpg
+        isMine:
+          description: Is it my event?
+          type: boolean
+          example: false
+        date:
+          description: An event date
+          type: string
+          example: "2020-01-01"
+          pattern: ^\d{4}-\d{2}-\d{2}$
+        type:
+          description: Event's type
+          type: string
+          example: (friends|fun|bang)
+        isOnline:
+          description: Event's creator is online now (green triangle on avatar)
+          type: boolean
+          example: true
+        wasRecentlyOnline:
+          description: Event's creator was recently online (yellow triangle on avatar)
+          type: boolean
+          example: false
+        time:
+          description: Event time (free format)
+          type: string
+          example: 23:00 - 5:00
+        hasVideos:
+          description: Has attached videos
+          type: boolean
+          example: true
+        likes:
+          description: Likes count
+          type: integer
+          nullable: true
+          example: 950
+        isLiked:
+          description: Current user liked this event
+          type: boolean
+          example: true
+        sticky:
+          description: Always on the top the events list
+          example: false
+          type: boolean
+        chemsfriendly:
+          description: Chemicals allowed
+          example: true
+          type: boolean
+        location:
+          description: Event's additional location details
+          example: Big white house
+          type: string
+          nullable: true
+        locality:
+          description: Event's city
+          example: Berlin
+          type: string
+          nullable: true
+        lat:
+          description: Event's latitude
+          type: number
+          format: float
+          example: 52.52000800
+        lng:
+          description: Event's longitude
+          type: number
+          format: float
+          example: 52.52000800
+        address_type:
+          description: Event's address visibility policy
+          default: full_address
+          enum:
+            - full_address
+            - city_only
+        country:
+          description: Event's country
+          example: Germany
+          type: string
+          nullable: true
+        country_code:
+          description: Event's country code
+          example: US
+          type: string
+          nullable: true
+        state:
+          description: Event's state
+          example: North Rhine-Westphalia
+          type: string
+          nullable: true
+        address:
+          description: Event's address
+          example: Auguststraße 29c, 10119 Berlin, Germany
+          type: string
+        distanceMeters:
+          description: Distance from current user
+          example: 250300
+          type: number
+          format: float
+        membership:
+          description: Current user's memebership status
+          type: string
+          example: (host|member|requested|rejected|leaved|removed)
+        members_count:
+          description: Members count
+          type: integer
+          example: 17
+    EventGeneralAttributes:
+      type: object
+      properties:
+        id:
+          description: Event id
+          type: integer
+          example: 2000
+        date:
+          description: An event date
+          type: string
+          example: "2020-01-01"
+          pattern: ^\d{4}-\d{2}-\d{2}$
+        isMine:
+          description: Current user created this event
+          type: boolean
+          example: true
+        photo:
+          description: Small photo url
+          type: string
+          example: https://dev.barebuddy.com/uploads/users/l/lX/lXC3Xb7Opudoq6rwJHtHP4qQxPSlUUtVhuRiNJo6_180x180.jpg
+        title:
+          description: Event title
+          type: string
+          example: My super event!
+    EventFilterEntry:
+      type: object
+      properties:
+        date:
+          description: A date
+          type: string
+          example: "2020-01-01"
+          pattern: ^\d{4}-\d{2}-\d{2}$
+        event_range_low:
+          description: Array of events within a LOW range (<= 100 km)
+          type: array
+          items:
+            $ref: '#/components/schemas/EventDiscoverAttributes'
+        event_range_high:
+          description: Array of events within a HIGH range (> 500 km; "except" event ids are excluded here)
+          type: array
+          items:
+            $ref: '#/components/schemas/EventDiscoverAttributes'
+        event_range_high_count:
+          description: High range events count ("except" event ids are excluded here)
+          type: integer
+    Message:
+      type: object
+      properties:
+        id:
+          description: Message id
+          type: string
+          example: 606193b08abcd51ac1370cf1
+        user_from:
+          description: Sender user id
+          type: integer
+          example: 3000
+        user_to:
+          description: Recipient user id
+          type: integer
+          example: 3000
+        msg_type:
+          description: Message type
+          default: text
+          enum:
+            - text
+            - image
+            - location
+            - video
+        idate:
+          description: Message created date
+          type: string
+          format: date-time
+          example: 2020-01-01T00:00:00.000000Z
+        is_read:
+          $ref: '#/components/schemas/EnumYesNo'
+        cancelled:
+          description: Removed by sender (PRO feature)
+          type: boolean
+          example: false
+        message:
+          description: Message payload
+          type: string
+          example: Heyy...
+        video_id:
+          description: Message video id
+          type: integer
+          example: 900
+        image_id:
+          description: Message image id
+          type: integer
+          example: 900
+        channel:
+          description: Message channel (chat mode)
+          type: string
+          example: (user|event|group)
+    Conversation:
+      type: object
+      properties:
+        chatType:
+          description: Chat type
+          default: user
+          enum:
+            - user
+            - event
+            - group
+        unreadMessagesCount:
+          description: Unread messages count
+          type: integer
+          example: 2
+        interlocutor:
+          $ref: '#/components/schemas/UserGeneralAttributes'
+        event:
+          $ref: '#/components/schemas/EventGeneralAttributes'
+        message:
+          $ref: '#/components/schemas/Message'
+    GroupConversation:
+      type: object
+      properties:
+        chatType:
+          description: Chat type
+          type: string
+          example: group
+        event:
+          $ref: '#/components/schemas/EventGeneralAttributes'
+        message:
+          $ref: '#/components/schemas/Message'
+        unreadMessagesCount:
+          description: Unread messages count
+          type: integer
+          example: 0
+    AppleSubscription:
+      type: object
+      properties:
+        id:
+          description: Apple subscription ID
+          type: integer
+          example: 2
+        user_id:
+          description: User ID
+          type: integer
+          example: 50000
+        package_id:
+          description: Package ID
+          type: string
+          example: buddy.pro.1m.abo
+        transaction_id:
+          description: Package ID
+          type: string
+          example: 1000000769462219
+        latest_reciept:
+          description: Encoded transaction reciept
+          type: string
+          example: MIIVYwYJKoZIhvcNAQc...+MJ+r6Qx3EM90+lfNvjVQ/TFDg==
+        expires_at:
+          description: Expiry date
+          type: string
+          example: "2000-01-01 00:00:00"
+        created_at:
+          description: Create date
+          type: string
+          example: "2020-01-01T00:00:00.000000Z"
+        update_at:
+          description: Update date
+          type: string
+          example: "2020-01-01T00:00:00.000000Z"
+    GoogleSubscription:
+      type: object
+      properties:
+        id:
+          description: Google subscription ID
+          type: integer
+          example: 2
+        user_id:
+          description: User ID
+          type: integer
+          example: 50000
+        package_id:
+          description: Package ID
+          type: string
+          example: buddy.pro.1m.abo
+        transaction_id:
+          description: Package ID
+          type: string
+          example: 1000000769462219
+        latest_reciept:
+          description: Encoded transaction reciept
+          type: string
+          example: MIIVYwYJKoZIhvcNAQc...+MJ+r6Qx3EM90+lfNvjVQ/TFDg==
+        expires_at:
+          description: Expiry date
+          type: string
+          example: "2000-01-01 00:00:00"
+        created_at:
+          description: Create date
+          type: string
+          example: "2020-01-01T00:00:00.000000Z"
+        update_at:
+          description: Update date
+          type: string
+          example: "2020-01-01T00:00:00.000000Z"
+  securitySchemes:
+    auth:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: /oauth/token
+          refreshUrl: /oauth/refresh
+          scopes:
+            auth:api: Default scope

@@ -1,0 +1,270 @@
+.rushes{
+    overflow: hidden;
+
+    .rushesGroup{
+        .rushItem{
+            position: relative;
+            float: left;
+            width: 33.33vw;
+            height: 33.33vw;
+            box-sizing: border-box;
+            border: 1px solid $bb-darkgrey;
+            border-top: 0;
+            border-left: 0;
+            background-position: center;
+            background-size: cover;
+
+            & > span{
+                position: relative;
+                display: block;
+                padding: 6px;
+                font-size: 18px;
+                font-family: $bb-raleway-light;
+                color: $bb-white;
+                z-index: 1;
+            }
+            &.rushesStripBubble{
+                background-color: $bb-green;
+                background-image: url('/images/rush/bubble_bg.png');
+                background-position: center;
+                background-size: cover;
+                background-repeat: no-repeat;
+
+                .rushesStripBubbleText{
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    padding: 10px 10px 38px;
+                    width: 70%;
+                    height: 82px;
+                    transform: translate3d(-50%, -50%, 0);
+                    box-sizing: border-box;
+                    z-index: 0;
+
+                    p{
+                        content: '';
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        z-index: -1;
+                        margin: 0;
+                        padding: 10px;
+                        width: 100%;
+                        height: 56px;
+                        line-height: 16px;
+                        font-size: 14px;
+                        font-family: $bb-raleway-light;
+                        border-radius: 20px 20px 20px 0;
+                        background: $bb-middarkgrey;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        color: transparent;
+                        text-shadow: 0 0 7px rgba(255, 255, 255, .5);
+                        box-sizing: border-box;
+                    }
+                    &::after {
+                    	content: '';
+                    	position: absolute;
+                        left: 0;
+                    	bottom: 0;
+                    	width: 0;
+                    	height: 0;
+                    	border: 28px solid transparent;
+                    	border-top-color: $bb-middarkgrey;
+                    	border-bottom: 0;
+                    	border-left: 0;
+                    	margin-bottom: 0;
+                        z-index: -1;
+                    }
+                }
+            }
+            &.rushBest{
+                float: right;
+                width: 66.66vw;
+                height: 66.66vw;
+
+                .rushesStripBubbleText{
+                    height: 80px;
+
+                    p{
+                        height: 80px;
+                    }
+                    &:after{
+                        bottom: -24px;
+                    }
+                }
+            }
+
+            .claps{
+                position: absolute;
+                left: 6px;
+                bottom: 6px;
+                z-index: 1;
+            }
+        }
+        &:nth-child(even){
+            .rushBest{
+                float: left;
+            }
+        }
+        &.withBest{
+            position: relative;
+            width: 100vw;
+            height: 100vw;
+
+            .rushItem{
+                position: absolute;
+
+                &.rushBest{
+                    top: 0;
+                    left: auto;
+                    right: 0;
+                }
+                &:nth-child(2){
+                    top: 0;
+                    left: 0;
+                    right: auto;
+                }
+                &:nth-child(3){
+                    top: 33.33vw;
+                    left: 0;
+                    right: auto;
+                }
+                &:nth-child(4){
+                    top: 66.66vw;
+                    left: 0;
+                }
+                &:nth-child(5){
+                    top: 66.66vw;
+                    left: 33.33vw;
+                }
+                &:nth-child(6){
+                    top: 66.66vw;
+                    left: 66.66vw;
+                }
+            }
+            &:nth-child(even){
+                .rushItem{
+                    &.rushBest{
+                        left: 0;
+                        right: auto;
+                    }
+                    &:nth-child(2){
+                        left: auto;
+                        right: 0;
+                    }
+                    &:nth-child(3){
+                        left: auto;
+                        right: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 750px) {
+    .rushes{
+        .rushesGroup{
+            .rushItem{
+                &.rushesStripBubble{
+                    .rushesStripBubbleText{
+                        height: 102px;
+
+                        p{
+                            height: 76px;
+
+                            &::after{
+                                content: ' for blur effect';
+                            }
+                        }
+                    }
+                }
+                &.rushBest{
+                    .rushesStripBubbleText{
+                        height: 120px;
+
+                        p{
+                            height: 120px;
+                        }
+                        &:after{
+                            bottom: -26px;
+                        }
+                    }
+                }
+            }
+            &.withBest{
+                width: auto;
+                height: calc(100vw - 270px);
+
+                .rushItem{
+                    &:nth-child(3){
+                        top: calc((100vw - 270px)/3);
+                    }
+                    &:nth-child(4){
+                        top: calc((100vw - 270px) * 2/3);
+                    }
+                    &:nth-child(5){
+                        top: calc((100vw - 270px) * 2/3);
+                        left: calc((100vw - 270px)/3);
+                    }
+                    &:nth-child(6){
+                        top: calc((100vw - 270px) * 2/3);
+                        left: calc((100vw - 270px) * 2/3);
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 750px) and (max-width: 1008px) {
+    .rushes{
+        .rushesGroup{
+            .rushItem{
+                width: calc((100vw - 270px)/3);
+                height: calc((100vw - 270px)/3);
+
+                &.rushBest{
+                    width: calc(((100vw - 270px) * 2/3));
+                    height: calc(((100vw - 270px) * 2/3));
+                }
+            }
+        }
+    }
+}
+@media screen and (min-width: 1009px) {
+    .rushes{
+        .rushesGroup{
+            .rushItem{
+                width: 246px;
+                height: 246px;
+
+                &.rushBest{
+                    width: 492px;
+                    height: 492px;
+                }
+            }
+            &.withBest{
+                height: 738px;
+
+                .rushItem{
+                    &:nth-child(3){
+                        top: 246px;
+                    }
+                    &:nth-child(4){
+                        top: 492px;
+                    }
+                    &:nth-child(5){
+                        top: 492px;
+                        left: 246px;
+                    }
+                    &:nth-child(6){
+                        top: 492px;
+                        left: 492px;
+                    }
+                }
+            }
+        }
+    }
+}

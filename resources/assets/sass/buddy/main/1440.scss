@@ -1,0 +1,35 @@
+@import "variables";
+
+@media only screen and (min-width: 1440px) {
+    header {
+        padding: 0 10px 0 30px;
+    }
+
+    .content-wrapper {
+        width: 96vw;
+        margin: 0 auto;
+
+        &.search-menu {
+            width: 96vw;
+        }
+
+        .faces {
+
+            &.catalog {
+
+                .face {
+                    width: calc(100% / 7 );
+                    height: calc(96vw / 7 );
+                }
+            }
+
+            &.list {
+
+                .face {
+                    width: 48%;
+                    height: 110px;
+                }
+            }
+        }
+    }
+}

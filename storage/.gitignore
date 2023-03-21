@@ -1,0 +1,7 @@
+*
+!.gitignore
+!/app
+/app/*
+!/app/segpay
+/app/segpay/*
+!/app/segpay/active_members_report.xlsx

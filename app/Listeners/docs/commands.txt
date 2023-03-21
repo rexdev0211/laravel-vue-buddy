@@ -1,0 +1,70 @@
+ffmpeg -re -i input.mp4 -g 52 \
+-strict experimental -acodec aac -ab 64k -vcodec libx264 -vb 448k \
+-f mp4 -movflags frag_keyframe+empty_moov \
+output.mp4
+
+
+
+ffmpeg -re -i input.mp4 \
+       -codec copy -map 0 \
+       -f segment -segment_list playlist.m3u8 \
+       -segment_list_flags +live -segment_time 10 \
+       out%03d.ts
+
+
+
+
+
+/usr/bin/ffmpeg \
+        -y -i input.mp4 \
+        -vcodec libx264 -acodec aac \
+        -b:v 1000k -refs 6 -coder 1 -sc_threshold 40 -flags +loop -me_range 16 -subq 7 -i_qfactor 0.71 -qcomp 0.6 -qdiff 4 -trellis 1 \
+        -b:a 128k -pass 1 \
+       -f segment -segment_list playlist.m3u8 \
+       -segment_list_flags +live -segment_time 10 \
+        out%03d.ts
+
+
+
+/usr/bin/ffmpeg \
+        -y -i input.mp4 \
+        -vcodec libx264 -acodec aac \
+       -f segment -segment_list playlist.m3u8 \
+       -segment_list_flags +live -segment_time 10 \
+        out%03d.ts
+
+
+
+
+/usr/bin/ffmpeg
+    -y -i input.mp4
+    -async 1 -metadata:s:v:0 start_time=0
+    -vcodec libx264 -acodec aac
+    -b:v 1000k -refs 6 -coder 1 -sc_threshold 40 -flags +loop -me_range 16 -subq 7 -i_qfactor 0.71 -qcomp 0.6 -qdiff 4 -trellis 1
+    -b:a 128k
+    -vf [in]scale=320:240 [out] -pass 1
+    -passlogfile /tmp/ffmpeg-passes5ca3dbe4185891r1c7/pass-5ca3dbe418617
+    /var/www/vue-spa/public/uploads/videos/h/hK/hKJTu0CAZLqYNFKRqUNKrLLRd2ODY9vmY8OBAuDD.mp4
+
+
+
+/usr/bin/ffmpeg \
+    -y -i input.mp4 \
+    -async 1 -metadata:s:v:0 start_time=0 \
+    -vcodec libx264 -acodec aac \
+    -vf [in]scale=320:240 [out] -pass 1 \
+    -f segment -segment_list playlist.m3u8 \
+    -segment_list_flags +live -segment_time 10 \
+    out%03d.ts
+
+
+/usr/bin/ffmpeg \
+    -y -i input.mp4 \
+    -async 1 -metadata:s:v:0 start_time=0 \
+    -vcodec libx264 -acodec aac \
+    -vf '[in]scale=320:240 [out]' \
+    -pass 1 \
+    -f segment -segment_list playlist.m3u8 \
+    -segment_list_flags +live -segment_time 10 \
+    out%03d.ts
+

@@ -1,0 +1,399 @@
+#rushHeader{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: $bb-darkgrey;
+    z-index: 12;
+
+    &.hidden{
+        display: none;
+    }
+    .rushEditStreak{
+        float: left;
+        padding: 10px;
+        height: 50px;
+        line-height: 30px;
+        font-size: 20px;
+        font-family: $bb-raleway-light;
+        color: #fff;
+        box-sizing: border-box;
+
+        svg{
+            float: left;
+            margin: 0 10px 0 0;
+            width: 30px;
+            height: 30px;
+            fill: #fff;
+        }
+    }
+    .rushHeaderLogo{
+        display: none;
+        float: left;
+        margin: 4px 0 0 10px;
+        width: 220px;
+        height: 40px;
+        background: url('/assets/img/logos/BB_Logo_white_small.png') no-repeat center center;
+        background-size: contain;
+    }
+    .rushHeaderMenu{
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50px;
+        height: 50px;
+
+        svg{
+            width: 50px;
+            height: 50px;
+            fill: $bb-green;
+
+            &.icon-close{
+                padding: 14px;
+                width: 22px;
+                height: 22px;
+            }
+        }
+    }
+    .rushHeaderLinks{
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 58px;
+        background: #000;
+        list-style: none;
+        box-sizing: border-box;
+
+        li{
+            float: left;
+            margin: 11px auto;
+            width: 27px;
+            height: 27px;
+
+            a{
+                position: relative;
+                display: block;
+                width: 27px;
+                height: 27px;
+
+                svg{
+                    width: 27px;
+                    height: 27px;
+                    fill: $bb-green;
+                }
+                .incoming{
+                    position: absolute;
+                    display: block;
+                    top: -3px;
+                    right: -2px;
+                    width: 11px;
+                    height: 11px;
+                    border: 2px solid #000;
+                    border-radius: 3px;
+                    background: #ff0000;
+                    box-sizing: border-box;
+                }
+            }
+            &.widgetButtonHolder{
+                margin: 9px auto 19px;
+
+            }
+            .widgetIcon{
+                position: relative;
+                display: block;
+                width: 30px;
+                height: 30px;
+                overflow: hidden;
+
+                svg{
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    margin: -25px 0 0 -23px;
+                    width: 46px;
+                    height: 50px;
+                }
+            }
+            .widgetHolder{
+                display: none;
+                position: absolute;
+                right: 16px;
+                bottom: 70px;
+                padding: 10px 15px 9px;
+                border-radius: 8px;
+                background: rgba(0,0,0,.6);
+
+                &::after{
+                    content: '';
+                    position: absolute;
+                    right: 15px;
+                    bottom: -6px;
+                    width: 0;
+                    height: 0;
+                    border-style: solid;
+                    border-width: 6px 6px 0 6px;
+                    border-color: rgba(0,0,0,.6) transparent transparent transparent;
+                }
+                .widgetHeader{
+                    width: 100%;
+                    height: 24px;
+                    min-width: 104px;
+                    line-height: 24px;
+                    font-size: 16px;
+                    font-family: $bb-robotoslab-regular;
+                    text-align: center;
+                    text-transform: uppercase;
+                    color: #fff;
+
+                    svg{
+                        position: relative!important;
+                        top: auto!important;
+                        left: auto!important;
+                        display: inline-block;
+                        margin: 0 2px 0 0!important;
+                        width: 24px!important;
+                        height: 24px!important;
+                        fill: #fff;
+                    }
+                    i{
+                        position: relative;
+                        top: -6px;
+                        font-style: normal;
+                    }
+                }
+                .widgetLinks{
+                    padding: 5px 0 0;
+                    text-align: center;
+
+                    a{
+                        display: inline-block;
+                        margin: 0 14px;
+                        width: 50px;
+                        text-align: center;
+                        height: auto;
+
+                        img{
+                            float: left;
+                            width: 50px;
+                            height: 50px;
+                            margin: 0 0 5px;
+                        }
+                        i{
+                            font-style: normal;
+                            font-family: $bb-raleway-bold;
+                            color: #fff;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .rushHeaderProfileLink{
+        display: none;
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        width: 32px;
+        height: 32px;
+
+        svg{
+            width: 32px;
+            height: 32px;
+            fill: #000;
+        }
+    }
+    .rushHeaderFavorites{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 50px;
+        height: 50px;
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        .rush{
+            position: relative;
+            margin: 5px 10px 5px 0;
+            width: 40px;
+            height: 40px;
+            flex: none;
+            border-radius: 8px;
+            background-image: url('/images/rush/rush_fav_bubble_bg.png');
+            background-position: center;
+            background-size: cover;
+
+            img{
+                width: 100%;
+                border-radius: 8px;
+            }
+            &:last-child{
+                margin-right: 0;
+            }
+            span{
+                position: absolute;
+                top: -1px;
+                right: -1px;
+                width: 15px;
+                height: 15px;
+                line-height: 15px;
+                text-align: center;
+                font-family: $bb-robotoslab-regular;
+                font-family: "RobotoSlab-Regular";
+                font-size: 10px;
+                color: #fff;
+                background: $bb-red;
+                border: 1px solid $bb-darkgrey;
+                border-radius: 5px;
+            }
+        }
+    }
+    &.noLinks{
+        .rushHeaderLinks{
+            display: none;
+        }
+        .rushHeaderFavorites{
+            display: none;
+        }
+    }
+}
+
+@media screen and (min-width: 750px) {
+    #rushHeader{
+        height: 48px;
+        background: $bb-green;
+
+        &.hidden{
+            display: block;
+        }
+        .rushEditStreak{
+            display: none;
+        }
+        .rushHeaderLogo{
+            display: block;
+        }
+        .rushHeaderMenu{
+            display: none;
+        }
+        .rushHeaderLinks{
+            position: relative;
+            background: none;
+            float: left;
+            margin: 0;
+            padding: 0 0 0 150px;
+            width: 580px;
+            height: 48px;
+            list-style: none;
+            box-sizing: border-box;
+
+            li{
+                float: left;
+                margin: 8px 28px;
+                width: 32px;
+                height: 32px;
+
+                a{
+                    width: 32px;
+                    height: 32px;
+
+                    svg{
+                        width: 32px;
+                        height: 32px;
+                        fill: #000;
+                    }
+                    .incoming{
+                        top: -2px;
+                        right: -2px;
+                        width: 10px;
+                        height: 10px;
+                        border: 2px solid $bb-green;
+                        border-radius: 0;
+                    }
+                }
+                &.widgetButtonHolder{
+                    margin: 7px auto;
+                }
+                .widgetIcon{
+                    position: relative;
+                    display: block;
+                    width: 34px;
+                    height: 34px;
+                    overflow: hidden;
+
+                    svg{
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        margin: -27px 0 0 -27px;
+                        width: 54px;
+                        height: 54px;
+                    }
+                }
+                .widgetHolder{
+                    top: 58px;
+                    padding: 10px 15px;
+                    right: 10px;
+                    bottom: auto;
+
+                    &::after{
+                        top: -6px;
+                        right: 18px;
+                        bottom: auto;
+                        border-width: 0 6px 6px 6px;
+                        border-color: transparent transparent rgba(0,0,0,.6) transparent;
+                    }
+                }
+            }
+        }
+        .rushHeaderProfileLink{
+            display: block;
+        }
+        .rushHeaderFavorites{
+            position: fixed;
+            top: auto;
+            left: 0;
+            right: auto;
+            bottom: 0;
+            display: block;
+            padding: 15px 0 0px 15px;
+            width: 270px;
+            height: auto;
+            max-height: 185px;
+            box-sizing: border-box;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background: $bb-darkgrey;
+
+            .rush{
+                position: relative;
+                margin: 0px 15px 15px 0;
+                width: 70px;
+                height: 70px;
+                flex: none;
+                float: left;
+            }
+        }
+        &.noLinks{
+            .rushHeaderLinks{
+                display: flex;
+            }
+            .rushHeaderFavorites{
+                display: block;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 750px) and (max-width: 900px) {
+    #rushHeader{
+        .rushHeaderLinks{
+            padding: 0 0 0 20px;
+            width: 470px;
+        }
+    }
+}

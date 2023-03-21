@@ -1,0 +1,50 @@
+<template>
+  <div class="w-views app">
+    <div class="secondary-menu page">
+
+      <div class="secondary-menu-header">
+        <a href="/">
+          <i class="back"></i>
+        </a>
+
+        <div class="logo">
+          <a href="/">
+            <img src="/new/img/buddy-logo.svg" alt="Buddy | Buddies & Benefits" />
+          </a>
+        </div>
+      </div>
+
+      <div class="secondary-menu-body">
+        <div class="title">{{ page.title }}</div>
+        <div class="static-page-content" v-html="page.content"></div>
+      </div>
+    </div>
+  </div><!--w-views-->
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      page: {}
+    }
+  },
+  props: ['slug'],
+  mixins: [require('@general/lib/mixin').default],
+  created() {
+    app.showLoading(true);
+    axios.get('/api/getStaticPage/'+app.lang+'/'+this.slug)
+        .then(({data}) => {
+          this.page = data;
+          app.showLoading(false);
+        })
+        .catch(e => {
+          this.page = {
+            content: 'Page not found',
+            title: '404'
+          };
+          app.showLoading(false);
+        })
+  },
+}
+</script>

@@ -1,0 +1,303 @@
+@import "variables";
+
+section {
+    position: relative;
+    height: 100vh;
+    max-height: -webkit-fill-available;
+    display: flex;
+    flex-flow: column nowrap;
+
+
+    .section-background {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        height: 53vh;
+    }
+
+    .section-wrapper {
+        background-color: $brand-grey;
+        box-shadow: inset 0px 10px 17px rgba(0, 0, 0, 0.5);
+        height: 47vh;
+        max-height: -webkit-fill-available;
+
+        .section-info {
+            height: 100%;
+            max-height: -webkit-fill-available;
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 20px;
+            box-sizing: border-box;
+
+            .icon-box {
+                margin-bottom: 8px;
+            }
+
+            .title {
+                width: 73%;
+                color: $brand-green;
+                text-align: center;
+                font-family: $font-bold;
+                font-size: 30px;
+                line-height: 35px;
+                letter-spacing: 0.9375px;
+                margin-bottom: 16px;
+            }
+
+            .descr {
+                font-family: $font-regular;
+                font-size: 14px;
+                line-height: 20px;
+                text-align: center;
+                letter-spacing: 0.5625px;
+                color: #FFFFFF;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 375px) {
+
+    section {
+
+        .section-wrapper {
+
+            .section-info {
+
+                .title {
+                    width: 60%;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 428px) {
+
+    section {
+
+        .section-wrapper {
+
+            .section-info {
+
+                .descr {
+                    font-size: 16px;
+                    line-height: 22px;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 768px) {
+
+    section {
+
+        .section-background {
+            height: 60vh;
+        }
+    
+        .section-wrapper {
+            height: 40vh;
+
+            .section-info {
+
+                .title {
+                    width: 37%;
+                    font-size: 40px;
+                    line-height: 45px;
+                    margin-bottom: 20px;
+                }
+
+                .descr {
+                    width: 70%;
+                    font-size: 18px;
+                    line-height: 24px;
+                }
+            }
+        }
+    }
+}
+
+
+@media only screen and (max-width: 926px) and (min-aspect-ratio: 4/3) and (orientation: landscape) {
+
+    section {
+        flex-flow: row nowrap;
+
+        .section-background,
+        .section-wrapper {
+            width: 50%;
+            height: 100vh;
+        }
+
+        .section-wrapper {
+
+            .section-info {
+
+                .icon-box {
+                    margin-bottom: 8vh;
+                }
+
+                .title {
+                    font-size: 6vh;
+                    line-height: 7vh;
+                    letter-spacing: 0.2vh;
+                    margin-bottom: 4vh;
+                }
+
+                .descr {
+                    font-size: 4vh;
+                    line-height: 5.5vh;
+                    letter-spacing: 0.15vh;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1024px) and (orientation: portrait) {
+
+    section {
+
+        .section-wrapper {
+
+            .section-info {
+
+                .title {
+                    width: 30%;
+                    font-size: 45px;
+                    line-height: 52px;
+                }
+
+                .descr {
+                    font-size: 22px;
+                    line-height: 30px;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1024px) and (orientation: landscape) {
+
+    section {
+
+        .section-background {
+            height: 100vh;
+        }
+
+        .section-shadow {
+            mix-blend-mode: multiply;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 50%;
+            z-index: 1;
+        }
+
+        .section-wrapper {
+            height: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2;
+            padding: 0;
+            box-sizing: border-box;
+            background: transparent;
+            box-shadow: none;
+
+            .section-info {
+                width: 68%;
+                padding: 130px 15px 15px 13vh;
+                align-items: flex-start;
+                position: absolute;
+
+                .icon-box {
+                    margin-bottom: 0;
+                }
+
+                .title {
+                    width: 60%;
+                    max-width: 400px;
+                    font-size: 60px;
+                    line-height: 70px;
+                    letter-spacing: 1.875px;
+                    margin-bottom: 30px;
+                    text-align: left;
+                    z-index: 1;
+                }
+
+                .descr {
+                    width: 66%;
+                    max-width: 450px;
+                    font-size: 22px;
+                    line-height: 30px;
+                    text-align: left;
+                }
+            }
+        }
+
+        &.left {
+
+            .section-shadow {
+                left: 0;
+                background: linear-gradient(270deg, rgba(0, 0, 0, 0.0001) 2.81%, #374954 98.53%);
+            }
+
+            .section-wrapper {
+
+                .section-info {
+                    left: 0;
+                    padding: 15px 15px 15px 13vh;
+                }
+            }
+        }
+
+        &.right {
+
+            .section-shadow {
+                right: 0;
+                background: linear-gradient(270deg,#374954 2.87%,rgba(0,0,0,.0001) 98.59%);
+            }
+
+            .section-wrapper {
+
+                .section-info {
+                    right: 0;
+                    padding: 15px 70px 15px 15px;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+
+    section {
+
+        .section-wrapper {
+
+
+            .section-info {
+            
+                .title {
+                    width: 80%;
+                    max-width: initial;
+                    font-size: 80px;
+                    line-height: 88px;
+                    margin-bottom: 40px;
+                }
+
+                .descr {
+                    font-size: 26px;
+                    line-height: 34px;
+                }
+            }
+        }
+    }
+}

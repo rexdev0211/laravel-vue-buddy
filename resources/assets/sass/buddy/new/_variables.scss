@@ -1,0 +1,31 @@
+// Brands
+$brand-green: #00F000;
+$brand-black: #1D1D1D;
+$brand-white: #FAFCFA;
+$brand-grey: #294754;
+
+$green-dark: #004646;
+$green-text: #2F7570;
+
+$green: #00F000;
+$white: #FAFCFA;
+
+// Fonts
+@font-face {
+  font-family: "RobotoCondensed-Bold";
+  src: url("/new/fonts/RobotoCondensed-Bold.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "RobotoCondensed-Regular";
+  src: url("/new/fonts/RobotoCondensed-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+// Typography
+$font-bold: 'RobotoCondensed-Bold', sans-serif;
+$font-regular: 'RobotoCondensed-Regular', sans-serif;

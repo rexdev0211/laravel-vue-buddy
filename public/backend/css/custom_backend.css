@@ -1,0 +1,86 @@
+.vertical-align:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+}
+.pagination-container .pagination{
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.bg-danger{
+    background: #f2dede !important;
+}
+.btn-grey{
+    background: #d2d2d2;
+    color: #000;
+}
+.alert li{
+    list-style: none;
+}
+
+.prohibited{
+    background: #9e9e9e;
+    color: #fff;
+}
+.moderationPhoto, .moderationVideo {
+    height: 20vh;
+    min-height: 190px;
+}
+    .moderationPhoto.smallBox,
+    .moderationVideo.smallBox {
+        height: auto;
+        min-height: auto;
+    }
+    .moderationPhoto .moderationPhotoImage,
+    .moderationVideo .moderationVideoImage {
+        float: left;
+        margin: 0 2%;
+        width: 46%;
+        height: 100%;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .moderationPhoto .moderationPhotoActions,
+    .moderationVideo .moderationVideoActions {
+        float: right;
+        margin: 0 2%;
+        padding: 10px 0 0;
+        width: 46%;
+        height: 100%;
+    }
+        .moderationPhoto .moderationPhotoActions button,
+        .moderationVideo .moderationVideoActions button{
+            float: left;
+            margin: 2%;
+            padding: 20px 5px;
+            width: 46%;
+            border: 1px solid #ccc;
+            text-align: center;
+            outline: none;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            color: #000;
+        }
+        .moderationPhoto .moderationPhotoActions button.prohibited, .moderationPhoto .moderationPhotoActions a.prohibited,
+        .moderationVideo .moderationVideoActions button.prohibited, .moderationVideo .moderationVideoActions a.prohibited {
+            color: #fff;
+        }
+        .moderationPhoto .moderationPhotoActions button:hover, .moderationPhoto .moderationPhotoActions a:hover,
+        .moderationVideo .moderationVideoActions button:hover, .moderationVideo .moderationVideoActions a:hover {
+            box-shadow: inset 0 0 3px rgba(0,0,0,.2);
+        }
+        .moderationPhoto .moderationPhotoActions button:active, .moderationPhoto .moderationPhotoActions a:active,
+        .moderationVideo .moderationVideoActions button:active, .moderationVideo .moderationVideoActions a:active {
+            box-shadow: inset 0 0 3px rgba(0,0,0,.2), 0 0 3px rgba(0,0,0,.3);
+        }
+        .moderationPhoto .moderationPhotoActions.smallButtons,
+        .moderationVideo .moderationVideoActions.smallButtons{
+            padding: 0;
+        }
+            .moderationPhoto .moderationPhotoActions.smallButtons button, .moderationPhoto .moderationPhotoActions.smallButtons a,
+            .moderationVideo .moderationVideoActions.smallButtons button, .moderationVideo .moderationVideoActions.smallButtons a {
+                padding: 5px;
+            }

@@ -1,0 +1,23 @@
+{
+    "name": "BUDDY",
+    "short_name": "BUDDY",
+    "description": "Kinky network for gay men!",
+    "icons": [
+        {
+            "src": "/main/img/favicon/black/android-chrome-192x192.png?v=5",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/main/img/favicon/black/android-chrome-512x512.png?v=5",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "theme_color": "#1d1d1d",
+    "background_color": "#1d1d1d"
+}

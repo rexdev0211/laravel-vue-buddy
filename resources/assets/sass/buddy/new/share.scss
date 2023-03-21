@@ -1,0 +1,149 @@
+@import "variables";
+
+section {
+
+    &#share {
+
+
+        .section-background {
+            background-image: url(/new/img/backgrounds/mobile-share.jpg);
+        }
+
+    }
+}
+
+@media only screen and (min-width: 768px) {
+
+    section {
+
+        &#share {
+
+            .section-background {
+                background-position: center;
+            }
+
+            .section-wrapper {
+
+                .section-info {
+
+                    .descr {
+                        width: 50%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1024px) and (orientation: portrait) {
+
+    section {
+
+        &#share {
+
+            .section-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                .section-info {
+                    padding: 6vh 20px;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1024px) and (orientation: landscape) {
+
+    section {
+
+        &#share {
+
+            .section-background {
+                height: 100vh;
+                background-image: url(/new/img/backgrounds/desktop-share.jpg);
+                background-position: top
+            }
+
+            .section-wrapper {
+                height: 100vh;
+
+                .section-info {
+                    width: 50%;
+                    justify-content: flex-end;
+                    padding-right: 70px;
+                    padding-bottom: 100px;
+
+                    .icon-box {
+                        top: 30px;
+                        left: -25px;
+                    }
+
+                    .title {
+                        width: 89%;
+                    }
+
+                    .descr {
+                        width: auto;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+
+    section {
+
+        &#share {
+
+            .section-wrapper {
+
+
+                .section-info {
+                    width: 52%;
+                
+                    .title {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* HD/Retina CSS */
+@media
+only screen and (-webkit-min-device-pixel-ratio: 1.25),
+only screen and ( min--moz-device-pixel-ratio: 1.25),
+only screen and ( -o-min-device-pixel-ratio: 1.25/1),
+only screen and ( min-device-pixel-ratio: 1.25),
+only screen and ( min-resolution: 200dpi),
+only screen and ( min-resolution: 1.25dppx)
+{
+
+    section {
+
+        &#share {
+
+            .section-background {
+                background-image: url(/new/img/backgrounds/mobile-share@2x.jpg);
+            }
+        }
+    }
+
+    @media only screen and (min-width: 1024px) {
+
+        section {
+
+            &#share {
+
+                .section-background {
+                    background-image: url(/new/img/backgrounds/desktop-share@2x.jpg);
+                }
+            }
+        }
+    }
+}

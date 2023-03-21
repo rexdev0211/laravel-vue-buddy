@@ -1,0 +1,128 @@
+@import "variables";
+
+section {
+
+    &#browse {
+
+        .section-background {
+            background-image: url(/new/img/backgrounds/mobile-browse.jpg);
+            background-position: top;
+        }
+    }
+}
+
+@media only screen and (min-width: 1024px) and (orientation: portrait) {
+
+    section {
+
+        &#browse {
+
+            .section-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                .section-info {
+                    padding: 6vh 20px;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1024px) and (orientation: landscape) {
+
+    section {
+
+        &#browse {
+
+            .section-background {
+                background-image: url(/new/img/backgrounds/desktop-browse.jpg);
+                height: 100vh;
+            }
+
+            .section-wrapper {
+
+                .section-info {
+                    padding-top: 90px;
+                    justify-content: flex-start;
+
+                    .icon-box {
+                        top: 40px;
+                        left: -17px;
+                    }
+
+                    .title {
+                        width: 58%;
+                    }
+
+                    .descr {
+                        width: 66%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+
+    section {
+
+        &#browse {
+
+            .section-background {
+                background-position: left;
+            }
+
+            .section-wrapper {
+
+                .section-info {
+                    width: 60%;
+
+                    .title {
+                        width: 79%;
+                    }
+                    
+                    .descr {
+                        width: 86%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* HD/Retina CSS */
+@media
+only screen and (-webkit-min-device-pixel-ratio: 1.25),
+only screen and ( min--moz-device-pixel-ratio: 1.25),
+only screen and ( -o-min-device-pixel-ratio: 1.25/1),
+only screen and ( min-device-pixel-ratio: 1.25),
+only screen and ( min-resolution: 200dpi),
+only screen and ( min-resolution: 1.25dppx)
+{
+
+    section {
+
+        &#browse {
+
+            .section-background {
+                background-image: url(/new/img/backgrounds/mobile-browse@2x.jpg);
+            }
+        }
+    }
+
+    @media only screen and (min-width: 1024px) {
+
+        section {
+
+            &#browse {
+
+                .section-background {
+                    background-image: url(/new/img/backgrounds/desktop-browse@2x.jpg);
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,477 @@
+.rushView{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $bb-darkgrey;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 10;
+    opacity: 1;
+    transition: opacity .2s ease-in-out;
+
+    .rushTapHolder{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+
+        &.rushTapHolder--left{
+            right: auto;
+            width: 50%;
+        }
+        &.rushTapHolder--right{
+            left: auto;
+            width: 50%;
+        }
+    }
+    .rushViewArrows{
+        display: none;
+
+        svg{
+            position: absolute;
+            top: 50vh;
+            margin: -16px 0 0;
+            width: 32px;
+            height: 32px;
+            fill: #fff;
+            cursor: pointer;
+        }
+        .rushViewLeftArrow{
+            left: -42px;
+        }
+        .rushViewRightArrow{
+            right: -42px;
+        }
+    }
+    .stripsDots{
+        position: absolute;
+        top: 6px;
+        left: 4px;
+        right: 4px;
+        height: 4px;
+        display: flex;
+        z-index: 2;
+
+        .stripsDot{
+            position: relative;
+            margin: 0 2px;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(255,255,255,.5);
+            flex-grow: 1;
+            overflow: hidden;
+
+            span{
+                position: absolute;
+                display: block;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: #fff;
+                transform: translate3d(-100%, 0, 0);
+
+                &.active{
+                    transform: translate3d(0, 0, 0);
+                }
+                &.animate{
+                    animation: fillWithTranslate 10s linear;
+                }
+            }
+        }
+    }
+    .rushDaysStreak{
+        position: absolute;
+        left: 30px;
+        bottom: 15px;
+        padding: 33px 15px 0;
+        width: 30px;
+        height: 34px;
+        line-height: 34px;
+        font-size: 20px;
+        font-family: $bb-raleway-light;
+        text-align: center;
+        color: #fff;
+        z-index: 2;
+        cursor: pointer;
+
+        svg{
+            position: absolute;
+            top: 0;
+            left: 15px;
+            width: 30px;
+            height: 35px;
+            fill: #fff;
+        }
+    }
+    .closePage{
+        position: absolute;
+        top: 21px;
+        right: 10px;
+        z-index: 2;
+        cursor: pointer;
+
+        &::before{
+            width: 5px;
+            height: 5px;
+            box-shadow: 0px 0px 14px 5px rgba(0,0,0,.6), inset 5px 0px rgba(0, 0, 0, 0.3);
+        }
+        svg{
+            fill: $bb-white;
+            padding: 15px;
+            width: 22px;
+            height: 22px;
+        }
+    }
+    h2{
+        position: absolute;
+        left: 25px;
+        bottom: 96px;
+        margin: 0;
+        width: calc(100vw - 50px);
+        line-height: 50px;
+        background: none;
+        font-size: 22px;
+        font-family: $bb-raleway-regular;
+        color: $bb-white;
+        text-shadow: 1px 1px 1px rgba(0,0,0,.5);
+    }
+    input{
+        position: absolute;
+        left: 25px;
+        bottom: 96px;
+        width: calc(100vw - 50px);
+        line-height: 50px;
+        background: none;
+        border: 0;
+        font-size: 22px;
+        font-family: $bb-raleway-regular;
+        color: $bb-white;
+        outline: none;
+        text-shadow: 1px 1px 1px rgba(0,0,0,.5);
+
+        &::placeholder{
+            color: $bb-white;
+        }
+    }
+    .rushUserProfile{
+        position: absolute;
+        top: 20px;
+        left: 15px;
+        width: 44px;
+        height: 44px;
+        z-index: 2;
+        border-radius: 8px;
+        box-shadow: 2px 2px 8px 0px rgba(0,0,0,.8);
+        cursor: pointer;
+
+        img{
+            width: 100%;
+            border-radius: 8px;
+        }
+        &.removeable{
+            &::before{
+                content: '\00d7';
+                position: absolute;
+                top: -7px;
+                left: -7px;
+                width: 14px;
+                height: 14px;
+                line-height: 14px;
+                background: #fff;
+                font-size: 14px;
+                text-align: center;
+                color: $bb-green;
+                font-family: $bb-robotoslab-regular;
+                border-radius: 50%;
+            }
+        }
+        &.disabled{
+            opacity: .6;
+        }
+    }
+
+    .rushBubble{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -170px 0 0 -36vw;
+        width: 70vw;
+        height: 180px;
+        background: $bb-middarkgrey;
+        border-radius: 40px 40px 40px 0;
+        z-index: 2;
+
+        textarea{
+            padding: 20px;
+            width: 100%;
+            height: 100%;
+            line-height: 28px;
+            color: $bb-white;
+            font-size: 20px;
+            font-family: $bb-raleway-light;
+            border: 0;
+            box-sizing: border-box;
+            resize: none;
+            outline: none;
+            background: none;
+        }
+        span{
+            display: block;
+            padding: 20px;
+            width: 100%;
+            height: 100%;
+            line-height: 28px;
+            color: $bb-white;
+            font-size: 20px;
+            font-family: $bb-raleway-light;
+            box-sizing: border-box;
+        }
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border: 52px solid transparent;
+            border-top-color: $bb-middarkgrey;
+            border-bottom: 0;
+            border-left: 0;
+            margin-bottom: -50px;
+        }
+    }
+    .rushImages{
+        position: absolute;
+        top: 90px;
+        left: 20px;
+        right: 20px;
+        height: calc(100vh - 220px);
+        background: $bb-middarkgrey;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        .rushImage{
+            position: relative;
+            float: left;
+            width: 33.3333%;
+            height: calc((100vw - 40px)/ 3);
+            background-color: $bb-darkgrey;
+            overflow: hidden;
+
+            img{
+                float: left;
+                width: 100%;
+            }
+            .icon{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin: -25px 0 0 -25px;
+                width: 50px;
+                height: 50px;
+                fill: $bb-green;
+            }
+            input{
+                position: absolute;
+                top: 0;
+                left: 0;
+                padding: 1000px 0 0;
+                width: 100%;
+                z-index: 1;
+                cursor: pointer;
+            }
+        }
+        hr {
+            clear: both;
+            margin: 0 15px 15px;
+            padding: 15px 0px 0;
+            border: 0;
+            border-bottom: 1px solid $bb-lightgrey;
+        }
+    }
+    .claps{
+        position: absolute;
+        right: 30px;
+        bottom: 15px;
+        padding: 34px 15px 0;
+        width: 34px;
+        line-height: 34px;
+        text-align: center;
+        z-index: 2;
+        cursor: pointer;
+
+        .clapsIcon{
+            left: 15px;
+        }
+    }
+    .favorites{
+        position: absolute;
+        left: calc(50% - 15px);
+        bottom: 15px;
+        margin: 0 0 0 -15px;
+        padding: 33px 15px 0;
+        width: 30px;
+        height: 34px;
+        line-height: 34px;
+        font-family: $bb-raleway-light;
+        font-size: 20px;
+        text-align: center;
+        color: #fff;
+        z-index: 2;
+        cursor: pointer;
+
+        .favoriteIcon{
+            position: absolute;
+            top: 0;
+            left: 15px;
+
+            svg{
+                fill: $bb-white;
+                width: 30px;
+                height: 34px;
+            }
+        }
+    }
+    &.rushBubbleBackground{
+        background-image: url('/images/rush/bubble_bg.png');
+    }
+    &.rushWizard{
+        top: 50px;
+
+        .rushUserProfile{
+            top: 30px;
+            left: 25px;
+        }
+        .deleteContent{
+            position: absolute;
+            top: 20px;
+            right: 66px;
+            width: 55px;
+            height: 55px;
+            line-height: 35px;
+            cursor: pointer;
+
+            &::before{
+                width: 6px;
+                height: 6px;
+                box-shadow: -1px -2px 10px 4px rgba(0,0,0,.8), inset 6px 0px rgba(0, 0, 0, 0.4);
+            }
+            svg{
+                fill: $bb-white;
+                padding: 15px;
+                width: 25px;
+                height: 25px;
+            }
+        }
+        .sendStrip{
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            width: 60px;
+            height: 60px;
+
+            svg{
+                fill: #fff;
+                padding: 10px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+        input, h2{
+            bottom: 25px;
+            width: calc(100vw - 100px);
+        }
+        .rushSetType{
+            position: absolute;
+            top: 50%;
+            left: 0;
+            margin: -45px 0 0 0;
+            width: 100%;
+            height: 90px;
+            text-align: center;
+
+            span{
+                display: inline-block;
+                width: 90px;
+                height: 90px;
+                margin: 0 15px;
+                background: linear-gradient(45deg, #12323c, #78a038);
+                border-radius: 25px;
+                box-shadow: 4px 6px 10px 2px rgba(0,0,0,.7);
+
+                &:first-child{
+                    margin-left: 0;
+                }
+                &:last-child{
+                    margin-right: 0;
+                }
+                svg{
+                    padding: 25px;
+                    width: 40px;
+                    height: 40px;
+                    fill: #fff;
+                }
+                &.bubble svg{
+                    padding: 28px;
+                    width: 34px;
+                    height: 34px;
+                }
+            }
+        }
+    }
+}
+
+@keyframes fillWithTranslate{
+    0% {transform: translate3d(-100%, 0, 0);}
+    100% {transform: translate3d(0, 0, 0);}
+}
+
+@media screen and (min-width: 750px) {
+    .rushView{
+        position: relative;
+        top: 0;
+        left: 0;
+        margin: 0 auto;
+        max-width: 481px;
+        height: calc(100vh - 48px);
+
+        .rushViewArrows{
+            display: block;
+        }
+        .rushBubble{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: 0;
+            width: 70%;
+            transform: translate3d(-50%, -50%, 0);
+            background: $bb-middarkgrey;
+            border-radius: 40px 40px 40px 0;
+        }
+        .rushImages{
+            height: calc(100vh - 230px);
+
+            .rushImage{
+                height: 147px;
+            }
+        }
+        h2{
+            width: calc(481px - 50px);
+        }
+        &.rushWizard{
+            top: 0;
+
+            h2, input{
+                width: calc(481px - 120px);
+            }
+        }
+    }
+}

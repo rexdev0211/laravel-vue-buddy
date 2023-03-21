@@ -1,0 +1,111 @@
+@import "variables";
+
+section {
+
+    &#find {
+
+        .section-background {
+            background-image: url(/new/img/backgrounds/mobile-find.jpg);
+        }
+    }
+}
+
+@media only screen and (min-width: 1024px) and (orientation: portrait) {
+
+    section {
+
+        &#find {
+
+            .section-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1024px) and (orientation: landscape) {
+
+    section {
+
+        &#find {
+
+            .section-background {
+                background-image: url(/new/img/backgrounds/desktop-find.jpg);
+                height: 100vh;
+            }
+
+            .section-wrapper {
+
+                .section-info {
+                    padding-top: 90px;
+                    justify-content: flex-start;
+
+                    .icon-box {
+                        top: 30px;
+                        left: -30px;
+                    }
+
+                    .title {
+                        width: 58%;
+                    }
+
+                    .descr {
+                        width: 66%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+
+    section {
+
+        &#find {
+
+            .section-wrapper {
+            
+               .title {
+                    width: 58%;
+                }
+            }
+        }
+    }
+}
+
+/* HD/Retina CSS */
+@media
+only screen and (-webkit-min-device-pixel-ratio: 1.25),
+only screen and ( min--moz-device-pixel-ratio: 1.25),
+only screen and ( -o-min-device-pixel-ratio: 1.25/1),
+only screen and ( min-device-pixel-ratio: 1.25),
+only screen and ( min-resolution: 200dpi),
+only screen and ( min-resolution: 1.25dppx)
+{
+
+    section {
+
+        &#find {
+
+            .section-background {
+                background-image: url(/new/img/backgrounds/mobile-find@2x.jpg);
+            }
+        }
+    }
+
+    @media only screen and (min-width: 1024px) and (orientation: landscape) {
+
+        section {
+
+            &#find {
+
+                .section-background {
+                    background-image: url(/new/img/backgrounds/desktop-find@2x.jpg);
+                }
+            }
+        }
+    }
+}

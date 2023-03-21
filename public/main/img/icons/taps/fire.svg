@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 31 39">
+  <defs/>
+  <mask id="a" width="31" height="39" x="0" y="0" maskUnits="userSpaceOnUse">
+    <path fill="#fff" fill-rule="evenodd" d="M18.37.3C14.96.34 4.1 12.05 5.05 20.53c.23 2.03-2.33.26-2.63-4.15-1.25-.47-3.6 6.13-1.7 13.01 1.88 6.15 6.98 9.03 14.39 9.03 7.38 0 15.34-4.75 15.34-13.37 0-8.61-11.04-12.18-11.08-23.47 0-.86-.37-1.26-.98-1.26h-.02z" clip-rule="evenodd"/>
+  </mask>
+  <g mask="url(#a)">
+    <path fill="url(#paint0_linear)" fill-rule="evenodd" d="M18.37.3C14.96.34 4.1 12.05 5.05 20.53c.23 2.03-2.33.26-2.63-4.15-1.25-.47-3.6 6.13-1.7 13.01 1.88 6.15 6.98 9.03 14.39 9.03 7.38 0 15.34-4.75 15.34-13.37 0-8.61-11.04-12.18-11.08-23.47 0-.86-.37-1.26-.98-1.26h-.02z" clip-rule="evenodd"/>
+  </g>
+  <mask id="b" width="17" height="19" x="7" y="20" maskUnits="userSpaceOnUse">
+    <path fill="#fff" fill-rule="evenodd" d="M13.8 20.55c-1.15 3.8-3.21 5.38-4.34 6.77-2.11 2.62-3.44 5.68-1.1 8.45 1.26 1.54 2.55 2.64 6.55 2.64 6.15 0 8.01-2.56 8.37-5.47.39-3.18-1.6-5.68-4.13-8.27-1.33-1.36-3.93-4.45-4.97-4.45-.18 0-.32.1-.39.33z" clip-rule="evenodd"/>
+  </mask>
+  <g mask="url(#b)">
+    <path fill="url(#paint1_linear)" fill-rule="evenodd" d="M13.8 20.55c-1.15 3.8-3.21 5.38-4.34 6.77-2.11 2.62-3.44 5.68-1.1 8.45 1.26 1.54 2.55 2.64 6.55 2.64 6.15 0 8.01-2.56 8.37-5.47.39-3.18-1.6-5.68-4.13-8.27-1.33-1.36-3.93-4.45-4.97-4.45-.18 0-.32.1-.39.33z" clip-rule="evenodd"/>
+  </g>
+  <defs>
+    <linearGradient id="paint0_linear" x1="18.36" x2="-15.18" y1="-9.65" y2="13.11" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EB1818"/>
+      <stop offset="1" stop-color="#FDC600"/>
+    </linearGradient>
+    <linearGradient id="paint1_linear" x1="1.93" x2="5.39" y1="16.64" y2="42.24" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ED8517"/>
+      <stop offset="1" stop-color="#FFD600"/>
+    </linearGradient>
+  </defs>
+</svg>

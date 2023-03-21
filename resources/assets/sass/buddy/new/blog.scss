@@ -1,0 +1,128 @@
+@import "variables";
+
+section {
+
+
+    &#blog {
+        position: relative;
+        background-image: url(/new/img/mobile-hero.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: top;
+        height: 100%;
+        min-height: 100vh;
+
+        .blog-wrapper {
+            position: relative;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url(/new/img/mobile-hero-background.png);
+            height: 100%;
+            min-height: 100vh;
+            background-size: contain;
+            background-repeat: repeat;
+            background-position: center;
+
+            .blog-inner {
+                padding: 91px 40px;
+                box-sizing: border-box;
+            }
+        }
+
+        h1 {
+            font-family: $font-regular;
+            font-size: 36px;
+            line-height: 42px;
+            letter-spacing: 1.125px;
+            color: $brand-green;
+            margin: 0 0 26px;
+        }
+
+        .content {
+
+                font-size: 20px;
+                line-height: 23px;
+                letter-spacing: 0.625px;
+                color: #FFFFFF;
+        }
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+
+    section {
+
+        &#blog {
+            background-image: url(/new/img/desktop-hero.jpg);
+            background-position: top;
+
+            .blog-wrapper {
+                background-image: url(/new/img/desktop-hero-background.png);
+                max-height: 100vh;
+                overflow-y: scroll;
+
+                &::-webkit-scrollbar {
+                    display: none;
+                }
+
+                .blog-inner {
+                    max-width: 109.7vh;
+                    padding: 11.9vh 13.9vh;
+                }
+
+                h1 {
+                    margin-bottom: 7.3vh;
+                    font-size: 4.4vh;
+                    line-height: 4.8vh;
+                    letter-spacing: 0.13vh;
+                }
+
+                .content {
+
+                    p {
+                        font-size: 2.4vh;
+                        line-height: 2.8vh;
+                        letter-spacing: .078vh;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* HD/Retina CSS */
+@media
+only screen and (-webkit-min-device-pixel-ratio: 1.25),
+only screen and ( min--moz-device-pixel-ratio: 1.25),
+only screen and ( -o-min-device-pixel-ratio: 1.25/1),
+only screen and ( min-device-pixel-ratio: 1.25),
+only screen and ( min-resolution: 200dpi),
+only screen and ( min-resolution: 1.25dppx)
+{
+    section {
+
+        &#blog {
+            background-image: url(/new/img/mobile-hero@2x.jpg);
+
+            .blog-wrapper {
+                background-image: url(/new/img/mobile-hero-background@2x.png);
+            }
+        }
+    }
+
+    @media only screen and (min-width: 1024px) {
+
+        section {
+
+            &#blog {
+                background-image: url(/new/img/desktop-hero@2x.jpg);
+
+                .blog-wrapper {
+                    background-image: url(/new/img/desktop-hero-background@2x.png);
+                }
+            }
+        }
+    }
+}

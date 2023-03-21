@@ -1,0 +1,38 @@
+// Brands
+$green: #00F000;
+$green-rgb: rgb(0, 240, 0);
+$green-dark: #004646;
+$black: #1D1D1D;
+$white: #FAFCFA;
+$grey: #294754;
+$grey-second: #666666;
+$green-text: #2F7570;
+
+$ff-backdrop-bg: rgba(0, 40, 40, 0.9);
+
+// Fonts
+@font-face {
+  font-family: "RobotoCondensed-Bold";
+  src: url("/main/fonts/RobotoCondensed-Bold.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "RobotoCondensed-Regular";
+  src: url("/main/fonts/RobotoCondensed-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/new/fonts/Roboto-Regular.ttf") format("ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+// Typography
+$font-bold: 'RobotoCondensed-Bold', sans-serif;
+$font-regular: 'RobotoCondensed-Regular', sans-serif;
+$font-roboto-regular: 'Roboto', sans-serif;

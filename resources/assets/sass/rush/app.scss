@@ -1,0 +1,162 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: $bb-darkgrey;
+}
+
+#rushBody{
+    position: relative;
+    padding: 50px 0 58px 0;
+    min-height: calc(100vh - 50px - 58px);
+}
+
+.clear{
+    clear: both;
+}
+
+.close{
+    position: relative;
+    width: 35px;
+    height: 35px;
+
+    &::before, &::after{
+        content: '';
+        position: absolute;
+        top: 17px;
+        left: 5px;
+        width: 25px;
+        height: 1px;
+        background: $bb-lightgrey;
+    }
+    &::before{
+        transform: rotate(45deg);
+    }
+    &::after{
+        transform: rotate(-45deg);
+    }
+}
+
+.alerts{
+    position: fixed;
+    right: 15px;
+    bottom: 75px;
+    z-index: 10;
+
+    .alert{
+        display: none;
+        margin: 15px 0 0;
+        padding: 15px;
+        max-width: 240px;
+        background: $bb-bg-error;
+        font-family: $bb-raleway-regular;
+        font-size: 20px;
+        color: $bb-white;
+        border-radius: 3px;
+        border: 1px solid $bb-white;
+
+        &.alert-active{
+            display: block;
+        }
+        &.alert-success{
+            background: $bb-bg-success;
+        }
+    }
+    .alertButtons{
+        margin: 20px 0 0;
+        border-top: 1px solid $bb-white;
+        padding: 20px 0 0;
+
+        button{
+            border: 0;
+            padding: 0 24px;
+            line-height: 36px;
+            border-radius: 3px;
+            font-size: 16px;
+            background: $bb-white;
+            outline: none;
+
+            &.cancel{
+                background: none;
+                float: right;
+                color: #fff;
+            }
+        }
+    }
+}
+
+.icon-with-shadow, .icon-with-light-shadow{
+    position: relative;
+
+    &::before{
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 9px;
+        height: 9px;
+        box-shadow: 0px 0px 20px 8px rgba(0, 0, 0, 1), inset 10px 0px rgba(0,0,0,.6);
+        z-index: -1;
+    }
+    &.icon-with-shadow-texted{
+        &::before{
+            top: 18px;
+        }
+    }
+}
+.icon-with-light-shadow{
+    &::before{
+        box-shadow: 0px 0px 20px 8px rgba(0,0,0,0.5), inset 10px 0px rgba(0, 0, 0, 0.25);
+    }
+}
+
+.tooltip{
+    position: absolute;
+    padding: 10px 20px;
+    font-size: 20px;
+    background: $bb-tooltip-bg;
+    border-radius: 10px;
+    white-space: nowrap;
+
+    &::before{
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        transform: translateX(-50%);
+    }
+    &.tooltip-top-left{
+        left: -20px;
+        bottom: calc(100% + 10px);
+
+        &::before{
+            left: 35px;
+            bottom: -7px;
+            border-color: $bb-tooltip-bg transparent transparent transparent;
+            border-width: 8px 10px 0 10px;
+        }
+    }
+    &.tooltip-bottom-left{
+        left: 6px;
+        top: calc(100% + 3px);
+
+        &::before{
+            left: 20px;
+            top: -7px;
+            border-color: transparent transparent $bb-tooltip-bg transparent;
+            border-width: 0 10px 8px 10px;
+        }
+    }
+}
+
+@media screen and (min-width: 750px) {
+    #rushBody {
+        margin: 0 0 0 270px;
+        padding: 48px 0 0 0;
+        max-width: 738px;
+        min-height: calc(100vh - 48px);
+    }
+    .alerts{
+        bottom: 15px;
+    }
+}

@@ -1,0 +1,249 @@
+.claps{
+    position: relative;
+    padding: 0 0 0 40px;
+    height: 34px;
+    line-height: 34px;
+
+    & > span{
+        font-family: $bb-raleway-light;
+        font-size: 20px;
+        color: #fff;
+    }
+    .clapsIcon{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 34px;
+        height: 34px;
+        background-image: url('/images/rush/claps_sprite.png');
+        background-size: 46px auto;
+        background-repeat: no-repeat;
+        background-position: center -6px;
+
+        &.clapped{
+            background-position: center -52px;
+        }
+        span:nth-child(even){
+            position: absolute;
+            top: -20px;
+            left: -22px;
+            width: 82px;
+            height: 44px;
+            opacity: 0;
+            z-index: 2;
+            animation: clapOpacity .4s linear;
+
+            i{
+                position: absolute;
+                top: 13px;
+                left: 12px;
+                width: 10px;
+                height: 10px;
+                background-image: url('/images/rush/claps_sprite.png');
+                background-size: 46px auto;
+                background-repeat: no-repeat;
+                background-position: 0px -98px;
+                animation: clapEven-1 .4s linear;
+            }
+            b{
+                position: absolute;
+                top: 6px;
+                left: 33px;
+                width: 9px;
+                height: 12px;
+                background-image: url('/images/rush/claps_sprite.png');
+                background-size: 46px auto;
+                background-repeat: no-repeat;
+                background-position: -17px -93px;
+                animation: clapEven-2 .4s linear;
+            }
+            &::before{
+                content: '';
+                position: absolute;
+                top: 4px;
+                left: 52px;
+                width: 12px;
+                height: 13px;
+                background-image: url('/images/rush/claps_sprite.png');
+                background-size: 46px auto;
+                background-repeat: no-repeat;
+                background-position: -32px -91px;
+                animation: clapEven-3 .4s linear;
+            }
+            &::after{
+                content: '';
+                position: absolute;
+                top: 31px;
+                left: 61px;
+                width: 6px;
+                height: 8px;
+                background-image: url('/images/rush/claps_sprite.png');
+                background-size: 46px auto;
+                background-repeat: no-repeat;
+                background-position: -40px -115px;
+                animation: clapEven-4 .4s linear;
+            }
+        }
+        span:nth-child(odd){
+            position: absolute;
+            top: -18px;
+            left: -2px;
+            width: 50px;
+            height: 40px;
+            opacity: 0;
+            z-index: 2;
+            animation: clapOpacity .4s linear;
+
+            i{
+                position: absolute;
+                top: 5px;
+                left: 0px;
+                width: 12px;
+                height: 12px;
+                background-image: url('/images/rush/claps_sprite.png');
+                background-size: 46px auto;
+                background-repeat: no-repeat;
+                background-position: -3px -123px;
+                animation: clapOdd-1 .4s linear;
+            }
+            b{
+                position: absolute;
+                top: 0px;
+                left: 20px;
+                width: 12px;
+                height: 15px;
+                background-image: url('/images/rush/claps_sprite.png');
+                background-size: 46px auto;
+                background-repeat: no-repeat;
+                background-position: -18px -118px;
+                animation: clapOdd-2 .4s linear;
+            }
+            &::before{
+                content: '';
+                position: absolute;
+                top: 14px;
+                left: 37px;
+                width: 10px;
+                height: 10px;
+                background-image: url('/images/rush/claps_sprite.png');
+                background-size: 46px auto;
+                background-repeat: no-repeat;
+                background-position: -32px -131px;
+                animation: clapOdd-3 .4s linear;
+            }
+            &::after{
+                content: '';
+                position: absolute;
+                top: 33px;
+                left: 42px;
+                width: 8px;
+                height: 8px;
+                background-image: url('/images/rush/claps_sprite.png');
+                background-size: 46px auto;
+                background-repeat: no-repeat;
+                background-position: -36px -147px;
+                animation: clapOdd-4 .4s linear;
+            }
+        }
+        & > i{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 34px;
+            height: 34px;
+            background-image: url('/images/rush/claps_sprite.png');
+            background-size: 46px auto;
+            background-repeat: no-repeat;
+            background-position: center -52px;
+            opacity: 0;
+            animation: clapBounce .4s linear, clapHide .4s linear;
+        }
+        & > b{
+            position: absolute;
+            top: -28px;
+            right: -28px;
+            width: 26px;
+            height: 26px;
+            color: #fff;
+            text-align: center;
+            border-radius: 3px;
+            line-height: 24px;
+            font-size: 12px;
+            background: #353537;
+            font-family: $bb-robotoslab-regular, sans-serif;
+            opacity: 0;
+            transform: scale3d(.8, .8, .8);
+            z-index: 1;
+            animation: clapPointsReflected .8s linear;
+        }
+
+        &.clapsIconReflected{
+            transform: rotateY(180deg);
+
+            & > b{
+                transform: scale3d(.8, .8, .8) rotateY(180deg);
+            }
+        }
+    }
+}
+
+@keyframes clapOpacity {
+    0% {opacity: 0}
+    50% {opacity: 1}
+    100% {opacity: 0}
+}
+@keyframes clapBounce {
+    0% {transform: scale(1)}
+    50% {transform: scale(1.15)}
+    100% {transform: scale(1)}
+}
+@keyframes clapHide {
+    0% {opacity: 1}
+    99% {opacity: 1}
+    100% {opacity: 0}
+}
+@keyframes clapPoints {
+    0% {opacity: 0; transform: scale3d(.8, .8, .8)}
+    25% {opacity: 1; transform: scale3d(1, 1, 1)}
+    75% {opacity: 1; transform: scale3d(1, 1, 1)}
+    100% {opacity: 1; transform: scale3d(.8, .8, .8)}
+}
+@keyframes clapPointsReflected {
+    0% {opacity: 0; transform: scale3d(.8, .8, .8) rotateY(180deg)}
+    25% {opacity: 1; transform: scale3d(1, 1, 1) rotateY(180deg)}
+    75% {opacity: 1; transform: scale3d(1, 1, 1) rotateY(180deg)}
+    100% {opacity: 1; transform: scale3d(.8, .8, .8) rotateY(180deg)}
+}
+@keyframes clapEven-1 {
+    0% {transform: translate3d(0,0,0)}
+    100% {transform: translate3d(-5px, -5px, 0)}
+}
+@keyframes clapEven-2 {
+    0% {transform: translate3d(0,0,0)}
+    100% {transform: translate3d(-2px, -5px, 0)}
+}
+@keyframes clapEven-3 {
+    0% {transform: translate3d(0,0,0)}
+    100% {transform: translate3d(3px, -5px, 0)}
+}
+@keyframes clapEven-4 {
+    0% {transform: translate3d(0,0,0)}
+    100% {transform: translate3d(4px, 2px, 0)}
+}
+
+@keyframes clapOdd-1 {
+    0% {transform: translate3d(0,0,0)}
+    100% {transform: translate3d(-3px, -5px, 0)}
+}
+@keyframes clapOdd-2 {
+    0% {transform: translate3d(0,0,0)}
+    100% {transform: translate3d(2px, -5px, 0)}
+}
+@keyframes clapOdd-3 {
+    0% {transform: translate3d(0,0,0)}
+    100% {transform: translate3d(5px, -4px, 0)}
+}
+@keyframes clapOdd-4 {
+    0% {transform: translate3d(0,0,0)}
+    100% {transform: translate3d(5px, 0, 0)}
+}

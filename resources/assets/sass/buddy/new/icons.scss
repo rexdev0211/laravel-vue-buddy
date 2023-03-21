@@ -1,0 +1,173 @@
+.back {
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(/new/img/back.svg);
+}
+
+.socials {
+
+    li {
+
+        i {
+            background-size: 2.5vh 2.5vh;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+
+            &.instagram {
+                background-image: url(/new/img/instagram.svg);
+            }
+
+            &.fb {
+                background-image: url(/new/img/facebook.svg);
+            }
+
+            &.twitter {
+                background-image: url(/new/img/twitter.svg);
+            }
+        }
+    }
+}
+
+section {
+
+    &#hero {
+
+        .hero-wrapper {
+
+            .hero-inner {
+
+                .languages {
+                    background-image: url(/new/img/arrow-down.svg);
+                    background-size: 5.1vh 5.1vh;
+                    background-position: top right;
+                    background-repeat: no-repeat;
+                }
+            }
+
+            .load-more {
+
+                .down {
+                    background-image: url(/new/img/arrow-down.svg);
+                    width: 39px;
+                    height: 39px;
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                }
+            }
+        }
+    }
+
+    .section-wrapper {
+
+        .section-info {
+
+            .icon-box {
+                position: relative;
+                width: 58px;
+                height: 58px;
+                background-repeat: no-repeat;
+                background-size: contain;
+                background-position: center;
+
+                &.find {
+                    background-image: url(/new/img/find-icon-white.svg);
+                }
+
+                &.browse {
+                    background-image: url(/new/img/browse-icon-white.svg);
+                }
+
+                &.share {
+                    background-image: url(/new/img/share-icon-white.svg);
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 428px) {
+
+    section {
+
+        .section-wrapper {
+
+            .section-info {
+    
+                .icon-box {
+                    width: 80px;
+                    height: 80px;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 768px) {
+
+    section {
+
+        .section-wrapper {
+
+            .section-info {
+
+                .icon-box {
+                    width: 100px;
+                    height: 100px;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1024px) and (orientation: portrait) {
+
+    section {
+
+        .section-wrapper {
+
+            .section-info {
+
+                .icon-box {
+                    width: 130px;
+                    height: 130px;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1024px) and (orientation: landscape) {
+
+    section {
+
+        &#hero {
+
+            .hero-wrapper {
+
+                .hero-inner {
+
+                    .languages {
+                        background-size: 3.9vh 3.8vh;
+                    }
+                }
+            }
+        }
+
+        .section-wrapper {
+
+            .section-info {
+
+                .icon-box {
+                    width: 155px;
+                    height: 155px;
+                }
+            }
+        }
+    }
+}

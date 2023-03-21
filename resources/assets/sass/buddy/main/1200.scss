@@ -1,0 +1,245 @@
+@import "variables";
+
+@media only screen and (min-width: 1200px) {
+
+    .scroll_top-button, .scroll_bottom-button {
+        right: 200px;
+        bottom: 94px;
+    }
+
+    body {
+
+        #app {
+
+            &.discover {
+
+                .favorites {
+                    margin-left: 0;
+                    margin-right: 0;
+                }
+
+                .pagetitle {
+                    padding: 0;
+                }
+            }
+
+            &.events {
+
+                .event-modal {
+
+                    .secondary-menu {
+
+                        &.media-watching {
+                            width: 560px;
+                            top: 128px;
+                            left: 320px;
+                        }
+                    }
+
+                    .event-card {
+
+                        .event-screen {
+
+                            .event-details {
+
+                                .main-box {
+
+                                    .main-box-footer {
+
+                                        .pics-catalog {
+
+                                            .pic {
+                                                height: 100px;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                &.bang {
+
+                                    .main-box {
+
+                                        .main-box-footer {
+
+                                            .favorites {
+
+                                                .faces {
+
+                                                    .face {
+                                                        height: 91px;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .w-chat__widget {
+        right: 30px;
+    }
+
+    .calendar-menu {
+        left: auto;
+        right: 20px;
+    }
+
+    .secondary-menu {
+
+        .secondary-menu-body {
+
+            .box {
+                margin: 20px 15px 0;
+
+                .media-catalog {
+
+                    .row {
+
+                        .media-wrap {
+
+                            &.more-than-five {
+
+                                .item {
+                                    min-width: 76px;
+                                    height: 76px;
+                                }
+                            }
+                        }
+
+                        .item {
+                            width: 71px;
+                            height: 71px;
+                        }
+                    }
+                }
+            }
+        }
+
+        &.media-watching {
+            width: 560px;
+            left: 320px;
+            top: 28px !important;
+            bottom: 28px;
+
+            .secondary-menu-body {
+                padding: 57px 45px 45px;
+                height: 100%;
+
+                .media {
+                    height: 100%;
+                }
+            }
+        }
+
+        &.delete-profile {
+            top: 121px;
+            left: 370px;
+            height: 549px !important;
+            margin-top: 120px;
+            border-radius: 7px;
+            background: linear-gradient(180deg, rgba(0, 70, 70, 0.85) 0%, rgba(0, 40, 40, 0.85) 100%);
+
+            .secondary-menu-header {
+                box-shadow: none;
+                background: transparent;
+                height: 54px;
+
+                .title {
+                    display: none;
+                }
+
+                .back {
+                    top: auto;
+                    right: 0;
+                    left: auto;
+                    width: 54px;
+                    height: 100%;
+
+                    &:before {
+                        width: 20px;
+                        height: 20px;
+                        background-image: url(/main/img/icons/message-removed.svg);
+                        filter: brightness(1000);
+                    }
+                }
+            }
+
+            .secondary-menu-body {
+                padding-top: 54px;
+                padding-bottom: 24px;
+                height: 100%;
+
+                .box {
+                    margin: 0 16px 0 24px;
+                }
+
+                .options-box {
+                    position: absolute;
+                    bottom: 25px;
+                    margin-top: 0;
+                }
+            }
+        }
+    }
+
+    .content-wrapper {
+        width: 96vw;
+        margin: 0 auto;
+
+        &.search-menu {
+            width: 96vw;
+
+            .box {
+                margin-left: 0 !important;
+            }
+        }
+
+        .faces {
+
+            &.catalog {
+
+                .face {
+                    width: calc(100% / 6 );
+                    height: calc(96vw / 6 );
+                }
+            }
+
+            &.list {
+                padding: 0;
+                justify-content: space-between;
+
+                .face {
+                    width: 48%;
+                    height: 110px;
+
+                    .img {
+                        width: 110px;
+                    }
+
+                    .details {
+                        padding: 13px 13px 13px 123px;
+                    }
+                }
+            }
+        }
+    }
+
+    .faces {
+        padding: 0;
+
+        .face {
+            width: 190px;
+            height: 190px;
+        }
+    }
+
+    header {
+        padding: 0 5px 0 30px;
+    }
+}
