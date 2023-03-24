@@ -20,7 +20,7 @@
 Homestead.json
 Homestead.yaml
 npm-debug.log
-.env
+# .env
 laravel-echo-server.lock
 _ide_helper.php
 .phpunit.*
